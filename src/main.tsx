@@ -1,10 +1,10 @@
 
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
-import { EzdApp } from './ezd-app';
+import { App } from './app';
 
 createRoot(document.getElementById('ezd-web-root')).render(
   <StrictMode>
-    <EzdApp/>
+    <App/>
   </StrictMode>
 );

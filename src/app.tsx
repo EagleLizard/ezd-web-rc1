@@ -1,5 +1,5 @@
 
-export function EzdApp() {
+export function App() {
   return (
     <div>
       hello ~
