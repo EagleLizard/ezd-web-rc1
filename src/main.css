@@ -1,0 +1,12 @@
+
+@import "./shared.css";
+
+body {
+  background-color: var(--bg-color);
+  color: var(--text-color);
+  font-family: Arial, Helvetica, sans-serif;
+
+  a {
+    color: var(--link-color);
+  }
+}

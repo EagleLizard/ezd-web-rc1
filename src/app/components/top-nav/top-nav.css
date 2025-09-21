@@ -1,0 +1,9 @@
+
+.top-nav {
+  display: inline-flex;
+  .top-nav-link {
+    &:not(:first-child) {
+      margin-left: 0.75rem;
+    }
+  }
+}

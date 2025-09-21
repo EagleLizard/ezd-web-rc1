@@ -1,0 +1,9 @@
+
+@import '../../../shared.css';
+
+.ezd-button {
+  background: none;
+  /* background-color: var(--text-color); */
+  /* color: var(--btn-color); */
+  background-color: var(--btn-bg-color);
+}

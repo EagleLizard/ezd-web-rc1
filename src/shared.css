@@ -1,0 +1,16 @@
+
+:root {
+  --bg-color: rgb(25, 25, 25);
+  --text-color: rgb(221, 221, 221);
+  /* --bg-color: rgb(221, 221, 221);
+  --text-color: rgb(25, 25, 25); */
+
+  --btn-color: var(--text-color);
+  --btn-bg-color: rgb(177, 206, 182);
+
+  --error-color: #d32f2f;
+
+  --link-color: chartreuse;
+  --warn-color: rgb(241,135,49);
+  --warn-text-color: pink;
+}

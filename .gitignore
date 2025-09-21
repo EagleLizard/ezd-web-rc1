@@ -3,7 +3,7 @@ node_modules
 .DS_Store
 dist
 public/*
-# package-lock.json
+.tanstack
 
 coverage
 test-reports

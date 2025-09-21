@@ -62,6 +62,8 @@ const config = [
       '@stylistic/eol-last': [ 'error', 'always' ],
       /* TS */
       'prefer-const': [ 'off' ],
+      // 'no-unused-vars': [ 'off' ],
+      '@typescript-eslint/no-unused-vars': [ 'warn' ],
     },
   }
 ];

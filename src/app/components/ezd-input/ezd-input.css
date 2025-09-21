@@ -1,0 +1,29 @@
+
+@import '../../../shared.css';
+
+.ezd-input {
+  display: inline-flex;
+  flex-direction: column;
+  padding-top: 2px;
+  &.ezd-error {
+    input {
+      border-color: var(--error-color);
+      &:focus-visible {
+        outline: var(--error-color) auto 1px;
+      }
+    }
+  }
+  input {
+    padding: 0.2rem 0;
+    color: var(--text-color);
+    background: none;
+    /* box-sizing: content-box; */
+  }
+  .ezd-input-label {
+    padding-bottom: 0.2rem;
+  }
+  .ezd-input-errormsg {
+    /* color: var(--error-color); */
+    font-size: 0.8rem;
+  }
+}
