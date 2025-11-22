@@ -9,7 +9,34 @@
     border: 1px solid var(--error-color);
     /* background-color: rgb(from var(--error-color) r g b / 5%); */
     .banner-close {
-      margin-left: 0.5rem;
+      margin-right: 0.5rem;
+    }
+  }
+  .whoami {
+    .whoami-content {
+      table.prop-table {
+        border-collapse: collapse;
+        border: 1px solid;
+        thead {
+          tr {
+            th {
+              padding: 0.3rem;
+              text-align: left;
+            }
+          }
+        }
+        tbody {
+          tr {
+            td {
+              border: 1px dotted;
+              padding: 0.3rem;
+              &:first-child {
+                text-align: right;
+              }
+            }
+          }
+        }
+      }
     }
   }
 }

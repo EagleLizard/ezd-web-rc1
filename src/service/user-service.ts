@@ -25,14 +25,13 @@ async function getWhoami() {
   let url: string;
   let rawResp: Response;
   let rawRespBody: unknown;
-  url = `${config.EZD_API_BASE_URL}/v1/user/whoami`;
+  url = `${config.EZD_API_BASE_URL}/v1/users/whoami`;
   rawResp = await fetch(url, {
     method: 'GET',
     credentials: 'include',
   });
   rawRespBody = await rawResp.json();
-  console.log('whoami resp body:');
-  console.log(rawRespBody);
+  return rawRespBody;
 }
 
 async function logInUser(opts: LogInUserOpts) {

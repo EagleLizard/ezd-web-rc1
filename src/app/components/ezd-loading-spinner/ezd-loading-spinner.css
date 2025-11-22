@@ -1,0 +1,39 @@
+
+@import '../../../shared.css';
+
+.ezd-loading-spinner {
+  display: inline-flex;
+  height: 0.9rem;
+  .spinner {
+    margin-left: 20%;
+    width: 100%;
+    animation: ezd-loading-spinner-rotation 0.9s linear infinite;
+    /* background-color: chartreuse; */
+    border-radius: 50%;
+    border: 2px solid var(--spinner-color);
+    border-bottom-color: transparent;
+    aspect-ratio: 1 / 1;
+  }
+}
+
+@keyframes ezd-loading-spinner-rotation {
+  0% {
+    /* transform: rotate(0deg); */
+    transform:
+      /* scale(0.75) */
+      rotate(0deg)
+    ;
+  }
+  50% {
+    transform:
+      /* scale(1) */
+      rotate(180deg)
+    ;
+  }
+  100% {
+    transform:
+      /* scale(0.75) */
+      rotate(360deg)
+    ;
+  }
+}

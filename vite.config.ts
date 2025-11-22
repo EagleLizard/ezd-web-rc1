@@ -12,4 +12,7 @@ export default defineConfig({
     }),
     react(),
   ],
+  server: {
+    port: 4447,
+  },
 });

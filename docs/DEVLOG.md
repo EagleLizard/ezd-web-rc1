@@ -3,9 +3,19 @@
 
 Notes and tasks (in lieu of a task management system). The format is roughly reverse-chronological by date.
 
+## [09/27/2025]
+
+### Windows 98 icons
+
+I have some icons in the previous project [ezd-web-rc0](https://github.com/EagleLizard/ezd-web-rc0), but I don't know where I got them.
+
+I found this site with icons: https://win98icons.alexmeub.com/
+
+And then there's also 98.css, a good resource & inspiration, but lacking most icons: https://github.com/jdan/98.css
+
 ## [09/12/2025]
 
-## 1 - Plain CSS
+### 1 - Plain CSS
 
 Using plain CSS is a bit painful in VSCode and Vite.
 

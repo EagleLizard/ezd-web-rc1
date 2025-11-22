@@ -7,6 +7,8 @@ import { EzdButton } from '../../../components/ezd-button/ezd-button';
 import { inputFormats } from '../../../../lib/input-formats';
 import { userService } from '../../../../service/user-service';
 import { prim } from '../../../../lib/util/validate-primitives';
+import { EzdLoadingSpinner } from '../../../components/ezd-loading-spinner/ezd-loading-spinner';
+import { WhoamiResp, whoamiRespSchema } from '../../../../lib/models/whoami-resp';
 
 type LoginPageProps = {
 //
@@ -24,6 +26,11 @@ export function LoginPage(props: LoginPageProps) {
   const [ authErrorMsg, setAuthErrorMsg ] = useState<string | undefined>();
 
   const [ showPassword, setShowPassword ] = useState<boolean>(false);
+
+  const [ whoamiLoading, setWhoamiLoading ] = useState<boolean>(false);
+  const [ loginLoading, setLoginLoading ] = useState<boolean>(false);
+
+  const [ whoamiRes, setWhoamiRes ] = useState<WhoamiResp | undefined>();
 
   if(usernameError !== undefined && inputFormats.checkUsername(username)) {
     setUsernameError(undefined);
@@ -45,15 +52,15 @@ export function LoginPage(props: LoginPageProps) {
       </div> */}
       {authErrorMsg && (
         <div className="auth-error-banner">
-          <div className="banner-message">
-            {authErrorMsg}
-          </div>
           <div className="banner-close">
             <EzdButton onClick={() => {
               closeAuthErrorBanner();
             }}>
               X
             </EzdButton>
+          </div>
+          <div className="banner-message">
+            {authErrorMsg}
           </div>
         </div>
       )}
@@ -84,23 +91,74 @@ export function LoginPage(props: LoginPageProps) {
           <EzdButton type="submit">
             Log in
           </EzdButton>
+          {loginLoading && (
+            <EzdLoadingSpinner/>
+          )}
         </div>
       </form>
       <hr/>
-      <div>
-        <EzdButton onClick={handleWhoamiClick}>
-          whoami
-        </EzdButton>
+      <div className="whoami">
+        <div className="whoami-button">
+          <EzdButton onClick={handleWhoamiClick}>
+            whoami
+          </EzdButton>
+          {whoamiLoading && (
+            <EzdLoadingSpinner/>
+          )}
+        </div>
+        <div className="whoami-content">
+          {whoamiRes && (
+            <table className="prop-table">
+              <thead>
+                <tr>
+                  <th>
+                    <EzdButton onClick={handleWhoamiRespCloseClick}>
+                      X
+                    </EzdButton>
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                {Object.entries(whoamiRes.user).map(([ k, v ]) => {
+                  return (
+                    <tr key={k}>
+                      <td>
+                        <code>
+                          {k}
+                        </code>
+                      </td>
+                      <td>
+                        <code>
+                          {v}
+                        </code>
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          )}
+        </div>
       </div>
     </div>
   );
+  function handleWhoamiRespCloseClick() {
+    setWhoamiRes(undefined);
+  }
   function handleWhoamiClick() {
+    setWhoamiRes(undefined);
+    setWhoamiLoading(true);
     userService.getWhoami().then(res => {
+      let whoamiRes: WhoamiResp;
       console.log('whoami res:');
       console.log(res);
+      whoamiRes = whoamiRespSchema.decode(res);
+      setWhoamiRes(whoamiRes);
     }).catch(err => {
       console.log('whoami err');
       console.log(err);
+    }).finally(() => {
+      setWhoamiLoading(false);
     });
   }
 
@@ -119,6 +177,8 @@ export function LoginPage(props: LoginPageProps) {
     if(!validUsername || !validPassword) {
       return;
     }
+    setLoginLoading(true);
+    setAuthErrorMsg(undefined);
     userService.logInUser({
       username,
       password,
@@ -135,6 +195,8 @@ export function LoginPage(props: LoginPageProps) {
     }).catch((err) => {
       console.log('err');
       console.log(err);
+    }).finally(() => {
+      setLoginLoading(false);
     });
     console.log({
       username,

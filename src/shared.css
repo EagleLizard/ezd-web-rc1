@@ -13,4 +13,7 @@
   --link-color: chartreuse;
   --warn-color: rgb(241,135,49);
   --warn-text-color: pink;
+
+  /* --spinner-color: rgb(177, 206, 182); */
+  --spinner-color: rgb(177, 206, 182);
 }
