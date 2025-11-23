@@ -1,5 +1,6 @@
 
 import { config } from '../lib/config';
+import { WhoamiResp, whoamiRespSchema } from '../lib/models/whoami-resp';
 
 type LogInBody = {
   userName: string;
@@ -21,17 +22,19 @@ export const userService = {
   getWhoami: getWhoami,
 } as const;
 
-async function getWhoami() {
+async function getWhoami(): Promise<WhoamiResp> {
   let url: string;
   let rawResp: Response;
   let rawRespBody: unknown;
-  url = `${config.EZD_API_BASE_URL}/v1/users/whoami`;
+  let whoamiResp: WhoamiResp;
+  url = `${config.EZD_API_BASE_URL}/v1/user/whoami`;
   rawResp = await fetch(url, {
     method: 'GET',
     credentials: 'include',
   });
   rawRespBody = await rawResp.json();
-  return rawRespBody;
+  whoamiResp = whoamiRespSchema.decode(rawRespBody);
+  return whoamiResp;
 }
 
 async function logInUser(opts: LogInUserOpts) {

@@ -1,11 +1,11 @@
 
 import { Type, Static } from '@sinclair/typebox';
 import { tbUtil } from '../util/tb-util';
+import { UserInfoSchema } from './user-info';
 
 const WhoamiRespTSchema = Type.Object({
   user: Type.Object({
-    email: Type.String(),
-    username: Type.String(),
+    ...UserInfoSchema.schema.properties,
   }),
 });
 
