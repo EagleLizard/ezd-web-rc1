@@ -7,6 +7,7 @@ type TopNavProps = {
 } & {};
 
 export function TopNav(props: TopNavProps) {
+
   return (
     <div className="top-nav">
       <div className="top-nav-link">

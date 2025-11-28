@@ -1,6 +1,6 @@
 
-import { Link, Outlet, createRootRoute } from '@tanstack/react-router';
-import { TopNav } from '../app/components/top-nav/top-nav';
+import { Outlet, createRootRoute } from '@tanstack/react-router';
+import { AppRoot } from '../app/app-root/app-root';
 
 export const Route = createRootRoute({
   component: RootComponent,
@@ -9,9 +9,9 @@ export const Route = createRootRoute({
 function RootComponent() {
   return (
     <>
-      <TopNav/>
-      <hr/>
-      <Outlet />
+      <AppRoot>
+        <Outlet />
+      </AppRoot>
     </>
   );
 }

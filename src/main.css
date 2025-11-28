@@ -1,12 +1,16 @@
 
 @import "./shared.css";
 
-body {
-  background-color: var(--bg-color);
-  color: var(--text-color);
-  font-family: Arial, Helvetica, sans-serif;
+html {
+  /* html elem is base for rem */
+  font-size: 16px;
+  body {
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    font-family: Arial, Helvetica, sans-serif;
 
-  a {
-    color: var(--link-color);
+    a {
+      color: var(--link-color);
+    }
   }
 }

@@ -1,7 +1,6 @@
 
 import './login-page.css';
 import React, { useState } from 'react';
-import { Button, InputLabel, TextField } from '@mui/material';
 import { EzdInput } from '../../../components/ezd-input/ezd-input';
 import { EzdButton } from '../../../components/ezd-button/ezd-button';
 import { inputFormats } from '../../../../lib/input-formats';
@@ -41,61 +40,71 @@ export function LoginPage(props: LoginPageProps) {
 
   return (
     <div className="login-page">
-      <div>
-        login
-      </div>
-      {/* <div className="login-field">
-        <TextField label="username" className="etc123"/>
-        <Button onClick={handleShowHideClick}>
-          {showPassword ? 'hide' : 'show'}
-        </Button>
-      </div> */}
-      {authErrorMsg && (
-        <div className="auth-error-banner">
-          <div className="banner-close">
-            <EzdButton onClick={() => {
-              closeAuthErrorBanner();
-            }}>
-              X
-            </EzdButton>
+      <section className="auth-n">
+        <div className="auth-form-container">
+          <div className="auth-header">
+            login
           </div>
-          <div className="banner-message">
-            {authErrorMsg}
-          </div>
-        </div>
-      )}
-      <form onSubmit={handleLoginFormSubmit}>
-        <div className="login-field">
-          <EzdInput
-            label="username"
-            invalid={usernameError !== undefined}
-            errorMsg={usernameError}
-            value={username}
-            onChange={handleUsernameChange}
-          />
-        </div>
-        <div className="login-field">
-          <EzdInput
-            label="password"
-            invalid={passwordError !== undefined}
-            errorMsg={passwordError}
-            type={showPassword ? 'text' : 'password'}
-            value={password}
-            onChange={handlePasswordChange}
-          />
-          <EzdButton onClick={handleShowHideClick}>
-            {showPassword ? 'hide' : 'show'}
-          </EzdButton>
-        </div>
-        <div className="login-field">
-          <EzdButton type="submit">
-            Log in
-          </EzdButton>
-          {loginLoading && (
-            <EzdLoadingSpinner/>
+          {/* <div className="login-field">
+            <TextField label="username" className="etc123"/>
+            <Button onClick={handleShowHideClick}>
+              {showPassword ? 'hide' : 'show'}
+            </Button>
+          </div> */}
+          {authErrorMsg && (
+            <div className="auth-error-banner">
+              <div className="banner-close">
+                <EzdButton onClick={() => {
+                  closeAuthErrorBanner();
+                }}>
+                  X
+                </EzdButton>
+              </div>
+              <div className="banner-message">
+                {authErrorMsg}
+              </div>
+            </div>
           )}
+          <form
+            className="auth-form"
+            onSubmit={handleLoginFormSubmit}
+          >
+            <div className="login-field">
+              <EzdInput
+                label="username"
+                invalid={usernameError !== undefined}
+                errorMsg={usernameError}
+                value={username}
+                onChange={handleUsernameChange}
+              />
+            </div>
+            <div className="login-field">
+              <EzdInput
+                label="password"
+                invalid={passwordError !== undefined}
+                errorMsg={passwordError}
+                type={showPassword ? 'text' : 'password'}
+                value={password}
+                onChange={handlePasswordChange}
+              />
+              <EzdButton onClick={handleShowHideClick}>
+                {showPassword ? 'hide' : 'show'}
+              </EzdButton>
+            </div>
+            <div className="login-field">
+              <EzdButton
+                className="full-button"
+                type="submit"
+              >
+                Log in
+              </EzdButton>
+              {loginLoading && (
+                <EzdLoadingSpinner/>
+              )}
+            </div>
+          </form>
         </div>
-      </form>
+      </section>
       <hr/>
       <div className="whoami">
         <div className="whoami-button">

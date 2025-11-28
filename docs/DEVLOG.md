@@ -3,6 +3,12 @@
 
 Notes and tasks (in lieu of a task management system). The format is roughly reverse-chronological by date.
 
+## [11/28/2025]
+
+### Structuring HTML
+
+MDN article on structuring HTML documents: https://developer.mozilla.org/en-US/docs/Learn_web_development/Core/Structuring_content/Structuring_documents
+
 ## [09/27/2025]
 
 ### Windows 98 icons

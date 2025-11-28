@@ -2,6 +2,48 @@
 @import "../../../../shared.css";
 
 .login-page {
+  /* display: flex; */
+
+  section {
+    &.auth-n {
+      box-sizing: border-box;
+      .auth-form-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        width: 24rem;
+        margin: 0 auto;
+        .auth-header {
+          padding: 0.2em 0;
+          font-size: 1.2rem;
+          display: flex;
+          align-items: center;
+        }
+        .auth-form {
+          display: flex;
+          flex-direction: column;
+          width: 100%;
+          .login-field {
+            &:not(:first-child) {
+              padding-top: 1rem;
+            }
+            display: flex;
+            /* flex-direction: column; */
+            align-items: end;
+            width: 100%;
+            .ezd-input {
+              width: 100%;
+            }
+            .ezd-button {
+              &.full-button {
+                width: 100%;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
   .auth-error-banner {
     display: flex;
     padding: 0.5rem;
@@ -13,6 +55,7 @@
     }
   }
   .whoami {
+    font-size: 0.85rem;
     .whoami-content {
       table.prop-table {
         border-collapse: collapse;
@@ -20,7 +63,7 @@
         thead {
           tr {
             th {
-              padding: 0.3rem;
+              padding: 0.4em;
               text-align: left;
             }
           }
@@ -29,7 +72,7 @@
           tr {
             td {
               border: 1px dotted;
-              padding: 0.3rem;
+              padding: 0.4em;
               &:first-child {
                 text-align: right;
               }
