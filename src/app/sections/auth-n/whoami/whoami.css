@@ -1,0 +1,31 @@
+
+.whoami {
+
+  font-size: 0.85rem;
+  .whoami-content {
+    table.prop-table {
+      border-collapse: collapse;
+      border: 1px solid;
+      thead {
+        tr {
+          th {
+            padding: 0.4em;
+            text-align: left;
+          }
+        }
+      }
+      tbody {
+        tr {
+          td {
+            border: 1px dotted;
+            padding: 0.4em;
+            &:first-child {
+              text-align: right;
+            }
+          }
+        }
+      }
+    }
+  }
+
+}
