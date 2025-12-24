@@ -1,5 +1,6 @@
 
 import { config } from '../lib/config';
+import { ResponseError } from '../lib/models/error/response-error';
 import { WhoamiResp, whoamiRespSchema } from '../lib/models/whoami-resp';
 
 type LogInBody = {
@@ -19,10 +20,11 @@ type LogInUserOpts = {
 
 export const userService = {
   logInUser: logInUser,
+  logoutUser: logoutUser,
   getWhoami: getWhoami,
 } as const;
 
-async function getWhoami(): Promise<WhoamiResp> {
+async function getWhoami(): Promise<WhoamiResp | undefined> {
   let url: string;
   let rawResp: Response;
   let rawRespBody: unknown;
@@ -32,6 +34,13 @@ async function getWhoami(): Promise<WhoamiResp> {
     method: 'GET',
     credentials: 'include',
   });
+  if(!rawResp.ok) {
+    if(rawResp.status === 401) {
+      return;
+    } else {
+      throw new ResponseError(rawResp);
+    }
+  }
   rawRespBody = await rawResp.json();
   whoamiResp = whoamiRespSchema.decode(rawRespBody);
   return whoamiResp;
@@ -62,4 +71,15 @@ async function logInUser(opts: LogInUserOpts) {
     body: rawRespBody,
   };
   return res;
+}
+
+async function logoutUser() {
+  let url = `${config.EZD_API_BASE_URL}/v1/user/logout`;
+  let rawResp = await fetch(url, {
+    method: 'POST',
+    credentials: 'include'
+  });
+  if(!rawResp.ok) {
+    throw new ResponseError(rawResp);
+  }
 }

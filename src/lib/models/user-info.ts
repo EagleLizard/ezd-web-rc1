@@ -6,7 +6,7 @@ import { tbUtil } from '../util/tb-util';
   Should match the backend server schema
 _*/
 const UserInfoTSchema = Type.Object({
-  user_id: Type.Integer(),
+  user_id: Type.String(),
   user_name: Type.String(),
   email: Type.String(),
 

@@ -8,6 +8,9 @@ import { prim } from '../../../../lib/util/validate-primitives';
 import { LoginForm, LoginFormData } from '../login-form/login-form';
 import { Whoami } from '../whoami/whoami';
 import { AuthErrorBanner } from '../auth-error-banner/auth-error-banner';
+import { useUserContext } from '../../../../service/user-context';
+import { UserInfoSchema } from '../../../../lib/models/user-info';
+import { useRouter } from '@tanstack/react-router';
 
 type LoginPageProps = {
 //
@@ -17,6 +20,9 @@ export function LoginPage(props: LoginPageProps) {
   const [ authErrorMsg, setAuthErrorMsg ] = useState<string | undefined>();
 
   const [ loginLoading, setLoginLoading ] = useState<boolean>(false);
+
+  const router = useRouter();
+  const userCtx = useUserContext();
 
   return (
     <div className="login-page">
@@ -54,7 +60,18 @@ export function LoginPage(props: LoginPageProps) {
           errMsg = 'Login error';
         }
         setAuthErrorMsg(errMsg);
+        return;
       }
+      if(!prim.isObject(res.body)) {
+        errMsg = 'Malformed login response';
+        setAuthErrorMsg(errMsg);
+        return;
+      }
+      let user = UserInfoSchema.decode(res.body.user);
+      userCtx.setUser(user);
+      router.navigate({
+        to: '/',
+      });
     }).catch((err) => {
       console.error('err');
       console.error(err);

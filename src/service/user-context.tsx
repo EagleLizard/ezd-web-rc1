@@ -2,11 +2,11 @@
 import React, { useEffect, useState } from 'react';
 import { UserInfo } from '../lib/models/user-info';
 import { userService } from './user-service';
-import { WhoamiResp } from '../lib/models/whoami-resp';
 
 export type UserContext = {
-  user?: UserInfo;
+  activeUser?: UserInfo;
   isLoading: boolean;
+  setUser: (user: UserInfo | undefined) => void;
 } & {};
 
 const userContext = React.createContext<UserContext | undefined>(undefined);
@@ -16,12 +16,13 @@ type UserContextProviderProps = {
 } & {};
 
 export function UserContextProvider(props: UserContextProviderProps) {
-  const [ user, setUser ] = useState<UserInfo>();
+  const [ activeUser, setActiveUser ] = useState<UserInfo | undefined>();
   const [ isLoadingUser, setIsLoadingUser ] = useState<boolean>(false);
 
   const userCtx: UserContext = {
-    user,
+    activeUser: activeUser,
     isLoading: isLoadingUser,
+    setUser: _setUser,
   };
 
   useEffect(() => {
@@ -35,25 +36,23 @@ export function UserContextProvider(props: UserContextProviderProps) {
   );
 
   async function initUserCtx() {
-    let user: UserInfo;
     if(isLoadingUser) {
       return;
     }
     setIsLoadingUser(true);
     try {
-      user = await loadUser();
-      setUser(user);
+      let whoamiResp = await userService.getWhoami();
+      setActiveUser(whoamiResp?.user);
     } finally {
       setIsLoadingUser(false);
     }
   }
 
-  async function loadUser(): Promise<UserInfo> {
-    let whoamiResp: WhoamiResp;
-    let userInfo: UserInfo;
-    whoamiResp = await userService.getWhoami();
-    userInfo = whoamiResp.user;
-    return userInfo;
+  /*
+    Used by login, logout
+  _*/
+  function _setUser(user: UserInfo | undefined) {
+    setActiveUser(user);
   }
 }
 

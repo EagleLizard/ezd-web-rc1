@@ -44,22 +44,19 @@ const config = [
       'react': reactEslint,
     },
     rules: {
-      indent: [
-        'error',
-        2,
-        {
-          'MemberExpression': 1,
-          'SwitchCase': 1
-        },
-      ],
       semi: 'error',
       eqeqeq: [ 'error', 'always' ],
       quotes: [ 'error', 'single' ],
       // 'no-octal': [ 'off' ],
       'no-multiple-empty-lines': [ 'error', { 'max': 1, 'maxBOF': 1 }],
       // 'no-unused-vars': [ 'warn' ],
+      '@stylistic/indent': [ 'error', 2, {
+        'MemberExpression': 1,
+        'SwitchCase': 1
+      }],
       '@stylistic/array-bracket-spacing': [ 'error', 'always', { 'objectsInArrays': false, 'arraysInArrays': false }],
       '@stylistic/eol-last': [ 'error', 'always' ],
+      '@stylistic/no-trailing-spaces': [ 'error' ],
       /* TS */
       'prefer-const': [ 'off' ],
       // 'no-unused-vars': [ 'off' ],
