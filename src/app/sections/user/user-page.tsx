@@ -45,6 +45,9 @@ export function UserPage(props: UserPageProps) {
   function handleLogoutClick() {
     userService.logoutUser().then(() => {
       userCtx.setUser(undefined);
+      router.navigate({
+        to: '/login',
+      });
     });
   }
 }

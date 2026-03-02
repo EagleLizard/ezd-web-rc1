@@ -1,0 +1,40 @@
+.user-mgmt {
+  table.user-table {
+    /* font-size: 0.9rem; */
+    border-collapse: collapse;
+    thead tr th {
+      padding: 0.4rem;
+      text-align: left;
+    }
+    tbody tr td {
+      font-size: 0.85rem;
+      padding: 0.4rem;
+      border: 1px dotted;
+      &.row-expando {
+
+      }
+    }
+  }
+}
+
+.user-mgmt-delete-modal {
+  table.user-data {
+    border-collapse: collapse;
+    margin: 0.3rem 0;
+    tbody tr td {
+      &:first-child {
+        text-align: end;
+      }
+      padding: 0.3rem;
+      border: 1px solid var(--text-color);
+    }
+  }
+  .modal-actions {
+    padding-top: 0.5rem;
+    .ezd-button {
+      &:not(:first-child) {
+        margin-left: 0.5rem;
+      }
+    }
+  }
+}

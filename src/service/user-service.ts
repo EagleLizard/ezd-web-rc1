@@ -1,12 +1,10 @@
 
+import { FetchClient } from '../lib/client/fetch-client';
 import { config } from '../lib/config';
+import { EzdError } from '../lib/models/error/ezd-error';
 import { ResponseError } from '../lib/models/error/response-error';
+import { EzdUserResp } from '../lib/models/user/ezd-user-resp';
 import { WhoamiResp, whoamiRespSchema } from '../lib/models/whoami-resp';
-
-type LogInBody = {
-  userName: string;
-  password: string;
-} & {};
 
 type LogInUserRes = {
   status: number;
@@ -18,22 +16,33 @@ type LogInUserOpts = {
   password: string;
 } & {};
 
+const _fc = FetchClient.init();
+
 export const userService = {
   logInUser: logInUser,
   logoutUser: logoutUser,
   getWhoami: getWhoami,
+  getUsers: getUsers,
 } as const;
 
-async function getWhoami(): Promise<WhoamiResp | undefined> {
-  let url: string;
-  let rawResp: Response;
-  let rawRespBody: unknown;
-  let whoamiResp: WhoamiResp;
-  url = `${config.EZD_API_BASE_URL}/v1/user/whoami`;
-  rawResp = await fetch(url, {
-    method: 'GET',
-    credentials: 'include',
+async function getUsers(): Promise<EzdUserResp[]> {
+  let usp = new URLSearchParams({
+    roles: 'true',
+    permissions: 'true',
   });
+  let url = `${config.EZD_API_BASE_URL}/v1/user?${usp.toString()}`;
+  let resp = await _fc.get(url);
+  let rawResp = await resp.json();
+  if(!Array.isArray(rawResp)) {
+    throw new EzdError('Invalid response type, expected array', 'EZDW_2.1');
+  }
+  let users = rawResp.map(EzdUserResp.decode);
+  return users;
+}
+
+async function getWhoami(): Promise<WhoamiResp | undefined> {
+  let url = `${config.EZD_API_BASE_URL}/v1/user/whoami`;
+  let rawResp = await _fc.get(url);
   if(!rawResp.ok) {
     if(rawResp.status === 401) {
       return;
@@ -41,32 +50,21 @@ async function getWhoami(): Promise<WhoamiResp | undefined> {
       throw new ResponseError(rawResp);
     }
   }
-  rawRespBody = await rawResp.json();
-  whoamiResp = whoamiRespSchema.decode(rawRespBody);
+  let rawRespBody = await rawResp.json();
+  let whoamiResp = whoamiRespSchema.decode(rawRespBody);
   return whoamiResp;
 }
 
-async function logInUser(opts: LogInUserOpts) {
-  let url: string;
-  let rawResp: Response;
-  let reqBody: LogInBody;
-  let rawRespBody: unknown;
-  let res: LogInUserRes;
-  url = `${config.EZD_API_BASE_URL}/v1/user/login`;
-  reqBody = {
-    userName: opts.username,
-    password: opts.password,
-  };
-  rawResp = await fetch(url, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
+async function logInUser(opts: LogInUserOpts): Promise<LogInUserRes> {
+  let url = `${config.EZD_API_BASE_URL}/v1/user/login`;
+  let rawResp = await _fc.post(url, {
+    body: {
+      userName: opts.username,
+      password: opts.password,
     },
-    credentials: 'include',
-    body: JSON.stringify(reqBody),
   });
-  rawRespBody = await rawResp.json();
-  res = {
+  let rawRespBody = await rawResp.json();
+  let res: LogInUserRes = {
     status: rawResp.status,
     body: rawRespBody,
   };
@@ -75,10 +73,7 @@ async function logInUser(opts: LogInUserOpts) {
 
 async function logoutUser() {
   let url = `${config.EZD_API_BASE_URL}/v1/user/logout`;
-  let rawResp = await fetch(url, {
-    method: 'POST',
-    credentials: 'include'
-  });
+  let rawResp = await _fc.wCt().post(url);
   if(!rawResp.ok) {
     throw new ResponseError(rawResp);
   }

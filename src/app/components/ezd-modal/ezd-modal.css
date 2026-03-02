@@ -1,0 +1,22 @@
+@import '../../../shared.css';
+
+dialog.ezd-modal {
+  padding: 0;
+  background-color: var(--bg-color);
+  color: var(--text-color);
+  &:open::backdrop {
+    background-color: rgba(0, 0, 0, 0.3);
+  }
+  .modal-head {
+    display: flex;
+    .close-btn {
+      margin-left: auto;
+      margin-right: 5px;
+      margin-top: 5px;
+    }
+  }
+  .modal-body {
+    padding: 1rem;
+    padding-top: 0;
+  }
+}

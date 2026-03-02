@@ -1,0 +1,18 @@
+.admin-page {
+  .admin-page-nav {
+    display: flex;
+    .nav-item {
+      padding: 0.15rem 0.25rem;
+      &:not(:first-child) {
+        margin: 0 0.375rem;
+      }
+      &.active {
+        border-bottom: 1px solid var(--text-color);
+      }
+      &:hover {
+        /* background-color: var(--text-color); */
+        background-color: var(--text-light-1);
+      }
+    }
+  }
+}

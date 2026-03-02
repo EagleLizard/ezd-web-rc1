@@ -13,6 +13,7 @@ import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as LoginIndexRouteImport } from './routes/login/index'
 import { Route as UserUsernameRouteImport } from './routes/user/$username'
+import { Route as AdminChar123SectionChar125RouteImport } from './routes/admin/{-$section}'
 
 const AboutRoute = AboutRouteImport.update({
   id: '/about',
@@ -34,16 +35,24 @@ const UserUsernameRoute = UserUsernameRouteImport.update({
   path: '/user/$username',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminChar123SectionChar125Route =
+  AdminChar123SectionChar125RouteImport.update({
+    id: '/admin/{-$section}',
+    path: '/admin/{-$section}',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/admin/{-$section}': typeof AdminChar123SectionChar125Route
   '/user/$username': typeof UserUsernameRoute
   '/login': typeof LoginIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/admin/{-$section}': typeof AdminChar123SectionChar125Route
   '/user/$username': typeof UserUsernameRoute
   '/login': typeof LoginIndexRoute
 }
@@ -51,20 +60,33 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/admin/{-$section}': typeof AdminChar123SectionChar125Route
   '/user/$username': typeof UserUsernameRoute
   '/login/': typeof LoginIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/about' | '/user/$username' | '/login'
+  fullPaths:
+    | '/'
+    | '/about'
+    | '/admin/{-$section}'
+    | '/user/$username'
+    | '/login'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/about' | '/user/$username' | '/login'
-  id: '__root__' | '/' | '/about' | '/user/$username' | '/login/'
+  to: '/' | '/about' | '/admin/{-$section}' | '/user/$username' | '/login'
+  id:
+    | '__root__'
+    | '/'
+    | '/about'
+    | '/admin/{-$section}'
+    | '/user/$username'
+    | '/login/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AboutRoute: typeof AboutRoute
+  AdminChar123SectionChar125Route: typeof AdminChar123SectionChar125Route
   UserUsernameRoute: typeof UserUsernameRoute
   LoginIndexRoute: typeof LoginIndexRoute
 }
@@ -99,12 +121,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof UserUsernameRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin/{-$section}': {
+      id: '/admin/{-$section}'
+      path: '/admin/{-$section}'
+      fullPath: '/admin/{-$section}'
+      preLoaderRoute: typeof AdminChar123SectionChar125RouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AboutRoute: AboutRoute,
+  AdminChar123SectionChar125Route: AdminChar123SectionChar125Route,
   UserUsernameRoute: UserUsernameRoute,
   LoginIndexRoute: LoginIndexRoute,
 }

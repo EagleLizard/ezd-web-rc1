@@ -1,10 +1,9 @@
 
-import './ezd-button.css';
+import './ezd-icon-button.css';
 
-type EzdButtonProps = {
+type EzdIconButtonProps = {
   children?: React.ReactNode;
   variant?: 'default' | 'secondary' | 'outline';
-  color?: 'default' | 'delete'
 } & Pick<React.ComponentProps<'button'>, (
   'className'
   | 'onClick'
@@ -12,23 +11,14 @@ type EzdButtonProps = {
   | 'aria-label'
   | 'title'
 )> & {};
-
-export function EzdButton(props: EzdButtonProps) {
+export function EzdIconButton(props: EzdIconButtonProps) {
   const variant = props.variant ?? 'default';
   const tabIndex = 0;
-  let classNames = [
-    'ezd-button',
+  const classNameStr = [
+    'ezd-icon-button',
     variant,
-  ];
-  if(props.className !== undefined) {
-    classNames.push(props.className);
-  }
-  switch(props.color) {
-    case 'delete':
-      classNames.push('color-delete');
-      break;
-  }
-  const classNameStr = classNames.join(' ');
+    props.className ?? '',
+  ].join(' ');
   return (
     <button
       className={classNameStr}
@@ -38,7 +28,9 @@ export function EzdButton(props: EzdButtonProps) {
       aria-label={props['aria-label']}
       title={props.title}
     >
-      { props.children }
+      <div>
+        {props.children}
+      </div>
     </button>
   );
 }

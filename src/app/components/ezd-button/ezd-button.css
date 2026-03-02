@@ -6,4 +6,9 @@
   /* background-color: var(--text-color); */
   /* color: var(--btn-color); */
   background-color: var(--btn-bg-color);
+  &.color-delete {
+    background: none;
+    color: red;
+    border-color: red;
+  }
 }

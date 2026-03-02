@@ -1,16 +1,16 @@
 
 import { prim } from '../../util/validate-primitives';
-import { ezdErrorCodes } from './ezd-error-codes';
+import { EzdErrorCode, ezdErrorCodes } from './ezd-error-codes';
 
 /*
 Intended as a superclass, but can be used without extending
 _*/
 export class EzdError extends Error {
   public readonly code: string;
-  constructor(message?: string, code?: string)
+  constructor(message?: string, code?: EzdErrorCode)
   constructor(message?: string, options?: ErrorOptions)
-  constructor(message?: string, code?: string, options?: ErrorOptions)
-  constructor(message?: string, code?: string | ErrorOptions, options?: ErrorOptions) {
+  constructor(message?: string, code?: EzdErrorCode, options?: ErrorOptions)
+  constructor(message?: string, code?: EzdErrorCode | ErrorOptions, options?: ErrorOptions) {
     if(prim.isObject(code)) {
       options = code;
       code = undefined;

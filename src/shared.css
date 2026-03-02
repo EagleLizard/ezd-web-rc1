@@ -4,6 +4,7 @@
   --text-color: rgb(221, 221, 221);
   /* --bg-color: rgb(221, 221, 221);
   --text-color: rgb(25, 25, 25); */
+  --text-light-1: color-mix(in srgb, var(--text-color) 10%, transparent);
 
   --btn-color: var(--text-color);
   --btn-bg-color: rgb(177, 206, 182);

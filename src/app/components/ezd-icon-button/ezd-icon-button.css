@@ -1,0 +1,10 @@
+
+@import '../../../shared.css';
+
+.ezd-icon-button {
+  cursor: pointer;
+  &.default {
+    color: var(--text-color);
+    background: none;
+  }
+}

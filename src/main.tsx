@@ -7,6 +7,7 @@ import { createRoot } from 'react-dom/client';
 import { RouterProvider, createRouter } from '@tanstack/react-router';
 
 import { routeTree } from './routeTree.gen';
+import { EzdSocket } from './lib/socket/ezd-socket';
 
 const router = createRouter({ routeTree });
 
@@ -49,11 +50,16 @@ if(rootEl === null) {
   throw new Error('root element not found');
 }
 
+// let ews = EzdSocket.init();
+
 createRoot(rootEl).render(
-  <React.StrictMode>
-    {/* <ThemeProvider theme={ezdTheme}>
-      <CssBaseline/> */}
-      <RouterProvider router={router}/>
-    {/* </ThemeProvider> */}
-  </React.StrictMode>
+  <RouterProvider router={router}/>
 );
+// createRoot(rootEl).render(
+//   <React.StrictMode>
+//     {/* <ThemeProvider theme={ezdTheme}>
+//       <CssBaseline/> */}
+//     <RouterProvider router={router}/>
+//     {/* </ThemeProvider> */}
+//   </React.StrictMode>
+// );
