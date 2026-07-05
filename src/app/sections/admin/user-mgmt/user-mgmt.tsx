@@ -3,7 +3,7 @@ import './user-mgmt.css';
 
 import { useEffect, useState } from 'react';
 import { Fragment } from 'react/jsx-runtime';
-import { FaTrash } from 'react-icons/fa6';
+// import { FaTrash } from 'react-icons/fa6';
 
 import { EzdUserResp } from '../../../../lib/models/user/ezd-user-resp';
 import { EzdButton } from '../../../components/ezd-button/ezd-button';
@@ -75,9 +75,12 @@ export function UserMgmt(props: UserMgmtProps) {
                   <tr><td colSpan={6} className="row-expando">
                     <div>
                       <EzdIconButton>
-                        <FaTrash onClick={() => {
+                        {/* <FaTrash onClick={() => {
                           setRowObjToDelete(rowObj);
-                        }}/>
+                        }}/> */}
+                        <div onClick={() => {
+                          setRowObjToDelete(rowObj);
+                        }}> delete </div>
                       </EzdIconButton>
                     </div>
                   </td></tr>

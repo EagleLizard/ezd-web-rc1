@@ -1,12 +1,12 @@
 import { createFileRoute } from '@tanstack/react-router';
-import { HomePage } from '../app/sections/home/home-page';
+import { JcdPage } from '../../app/sections/jcd/jcd-page';
 
-export const Route = createFileRoute('/')({
+export const Route = createFileRoute('/jcd/')({
   component: RouteComponent,
 });
 
 function RouteComponent() {
   return (
-    <HomePage/>
+    <JcdPage/>
   );
 }

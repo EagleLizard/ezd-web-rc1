@@ -1,7 +1,11 @@
 
 import './top-nav.css';
+import { useEffect, useState } from 'react';
 import { Link } from '@tanstack/react-router';
+
 import { useUserContext } from '../../../service/user-context';
+import { userService } from '../../../service/user-service';
+import { EzdPermission } from '../../../lib/models/authz/ezd-permission';
 
 type TopNavProps = {
   //
@@ -9,23 +13,41 @@ type TopNavProps = {
 
 export function TopNav(props: TopNavProps) {
   const userCtx = useUserContext();
-  const activeUser = userCtx.activeUser;
+  const [ activeUserPerms, setActiveUserPerms ] = useState<EzdPermission[]>();
+  const hasJcdPerm = activeUserPerms?.findIndex((ezdPerm) => {
+    return ezdPerm.name === 'jcd.proj.read';
+  }) !== -1;
+
+  useEffect(() => {
+    if(userCtx.activeUser === undefined) {
+      return;
+    }
+    userService.getUserPerms(userCtx.activeUser.user_id).then((ezdPerms) => {
+      console.log(ezdPerms);
+      setActiveUserPerms(ezdPerms);
+    });
+  }, [ userCtx.activeUser ]);
 
   return (
     <div className="top-nav">
       <div className="top-nav-link">
         <Link to="/">home</Link>
       </div>
+      {hasJcdPerm && (
+        <div className="top-nav-link">
+          <Link to="/jcd">jcd</Link>
+        </div>
+      )}
       <div className="top-nav-link">
         <Link to="/about">about</Link>
       </div>
       <div className="vert-sep"></div>
-      { !activeUser && (
+      { !userCtx.activeUser && (
         <div className="top-nav-link">
           <Link to="/login">login</Link>
         </div>
       )}
-      { activeUser && (
+      { userCtx.activeUser && (
         <>
           <div className="top-nav-link">
             <Link to="/admin/{-$section}">
@@ -35,7 +57,7 @@ export function TopNav(props: TopNavProps) {
           <div className="top-nav-link">
             <Link
               to="/user/$username"
-              params={{username: activeUser.user_name}}
+              params={{username: userCtx.activeUser.user_name}}
             >
               me
             </Link>

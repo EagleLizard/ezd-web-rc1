@@ -14,7 +14,9 @@ export function AppRoot(props: AppRootProps) {
     <div className="ezd-app-root">
       <UserContextProvider>
         <TopNav/>
-        <hr/>
+        <div className="hr">
+          <div className="inner"></div>
+        </div>
         {props.children}
       </UserContextProvider>
     </div>

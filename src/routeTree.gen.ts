@@ -12,7 +12,9 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as LoginIndexRouteImport } from './routes/login/index'
+import { Route as JcdIndexRouteImport } from './routes/jcd/index'
 import { Route as UserUsernameRouteImport } from './routes/user/$username'
+import { Route as JcdProjectRouteImport } from './routes/jcd/$project'
 import { Route as AdminChar123SectionChar125RouteImport } from './routes/admin/{-$section}'
 
 const AboutRoute = AboutRouteImport.update({
@@ -30,9 +32,19 @@ const LoginIndexRoute = LoginIndexRouteImport.update({
   path: '/login/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const JcdIndexRoute = JcdIndexRouteImport.update({
+  id: '/jcd/',
+  path: '/jcd/',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const UserUsernameRoute = UserUsernameRouteImport.update({
   id: '/user/$username',
   path: '/user/$username',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const JcdProjectRoute = JcdProjectRouteImport.update({
+  id: '/jcd/$project',
+  path: '/jcd/$project',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AdminChar123SectionChar125Route =
@@ -46,14 +58,18 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/admin/{-$section}': typeof AdminChar123SectionChar125Route
+  '/jcd/$project': typeof JcdProjectRoute
   '/user/$username': typeof UserUsernameRoute
-  '/login': typeof LoginIndexRoute
+  '/jcd/': typeof JcdIndexRoute
+  '/login/': typeof LoginIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/admin/{-$section}': typeof AdminChar123SectionChar125Route
+  '/jcd/$project': typeof JcdProjectRoute
   '/user/$username': typeof UserUsernameRoute
+  '/jcd': typeof JcdIndexRoute
   '/login': typeof LoginIndexRoute
 }
 export interface FileRoutesById {
@@ -61,7 +77,9 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/admin/{-$section}': typeof AdminChar123SectionChar125Route
+  '/jcd/$project': typeof JcdProjectRoute
   '/user/$username': typeof UserUsernameRoute
+  '/jcd/': typeof JcdIndexRoute
   '/login/': typeof LoginIndexRoute
 }
 export interface FileRouteTypes {
@@ -70,16 +88,27 @@ export interface FileRouteTypes {
     | '/'
     | '/about'
     | '/admin/{-$section}'
+    | '/jcd/$project'
     | '/user/$username'
-    | '/login'
+    | '/jcd/'
+    | '/login/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/about' | '/admin/{-$section}' | '/user/$username' | '/login'
+  to:
+    | '/'
+    | '/about'
+    | '/admin/{-$section}'
+    | '/jcd/$project'
+    | '/user/$username'
+    | '/jcd'
+    | '/login'
   id:
     | '__root__'
     | '/'
     | '/about'
     | '/admin/{-$section}'
+    | '/jcd/$project'
     | '/user/$username'
+    | '/jcd/'
     | '/login/'
   fileRoutesById: FileRoutesById
 }
@@ -87,7 +116,9 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AboutRoute: typeof AboutRoute
   AdminChar123SectionChar125Route: typeof AdminChar123SectionChar125Route
+  JcdProjectRoute: typeof JcdProjectRoute
   UserUsernameRoute: typeof UserUsernameRoute
+  JcdIndexRoute: typeof JcdIndexRoute
   LoginIndexRoute: typeof LoginIndexRoute
 }
 
@@ -110,8 +141,15 @@ declare module '@tanstack/react-router' {
     '/login/': {
       id: '/login/'
       path: '/login'
-      fullPath: '/login'
+      fullPath: '/login/'
       preLoaderRoute: typeof LoginIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/jcd/': {
+      id: '/jcd/'
+      path: '/jcd'
+      fullPath: '/jcd/'
+      preLoaderRoute: typeof JcdIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/user/$username': {
@@ -119,6 +157,13 @@ declare module '@tanstack/react-router' {
       path: '/user/$username'
       fullPath: '/user/$username'
       preLoaderRoute: typeof UserUsernameRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/jcd/$project': {
+      id: '/jcd/$project'
+      path: '/jcd/$project'
+      fullPath: '/jcd/$project'
+      preLoaderRoute: typeof JcdProjectRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/admin/{-$section}': {
@@ -135,7 +180,9 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AboutRoute: AboutRoute,
   AdminChar123SectionChar125Route: AdminChar123SectionChar125Route,
+  JcdProjectRoute: JcdProjectRoute,
   UserUsernameRoute: UserUsernameRoute,
+  JcdIndexRoute: JcdIndexRoute,
   LoginIndexRoute: LoginIndexRoute,
 }
 export const routeTree = rootRouteImport

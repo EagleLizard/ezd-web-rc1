@@ -1,9 +1,18 @@
 
 :root {
   --bg-color: rgb(25, 25, 25);
+  --bg-color-lite: rgb(35, 30, 30);
   --text-color: rgb(221, 221, 221);
-  /* --bg-color: rgb(221, 221, 221);
-  --text-color: rgb(25, 25, 25); */
+  --text-color-2: rgb(175, 255, 95);
+  --text-color-3: rgb(255, 218, 95);
+
+
+  /* --text-clr-alt-1: rgb(167, 199, 228); */
+  --text-clr-alt-1: rgb(90, 122, 158);
+  --text-clr-alt-2: rgb(167, 199, 228);
+  /* --text-clr-alt-1: rgb(35, 80, 95); */
+  /* --bg-color: rgb(221, 221, 221); */
+  /* --text-color: rgb(25, 25, 25); */
   --text-light-1: color-mix(in srgb, var(--text-color) 10%, transparent);
 
   --btn-color: var(--text-color);

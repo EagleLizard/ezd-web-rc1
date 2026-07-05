@@ -1,0 +1,18 @@
+
+@import '../../../shared.css';
+
+.jcd-page {
+  .jcd-proj-previews {
+    /* display: flex;
+    flex-wrap: wrap; */
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(20rem, 1fr));
+    /* gap: 0.3rem; */
+    column-gap: 0.8rem;
+    row-gap: 0.8rem;
+
+    .jcd-proj-preview-item {
+      /* flex-basis: 0; */
+    }
+  }
+}

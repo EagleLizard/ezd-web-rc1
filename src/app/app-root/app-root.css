@@ -1,4 +1,12 @@
 
-.ezd-app-root {
+@import '../../shared.css';
 
+.ezd-app-root {
+  margin: 0 5rem;
+  div.hr {
+    padding-block: 0.5em;
+    .inner {
+      border-bottom: 1px solid var(--text-color);
+    }
+  }
 }

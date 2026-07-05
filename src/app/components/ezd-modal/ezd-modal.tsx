@@ -1,7 +1,7 @@
 
 import './ezd-modal.css';
 
-import { FaX } from 'react-icons/fa6';
+// import { FaX } from 'react-icons/fa6';
 import { useEffect, useRef } from 'react';
 
 import { EzdIconButton } from '../ezd-icon-button/ezd-icon-button';
@@ -41,7 +41,8 @@ export function EzdModal(props: EzdModalProps) {
           className="close-btn"
           onClick={handleClose}
         >
-          <FaX/>
+          {/* <FaX/> */}
+          X
         </EzdIconButton>
       </div>
       <div className="modal-body">

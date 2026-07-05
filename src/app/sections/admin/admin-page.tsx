@@ -97,7 +97,6 @@ export function AdminPage(props: AdminPageProps) {
   function fetchUsers(): Promise<void> {
     setLoadingUsers(true);
     return userService.getUsers().then(users => {
-      console.log({users});
       setUserResps(users);
     }).finally(() => {
       setLoadingUsers(false);

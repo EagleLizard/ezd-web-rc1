@@ -1,0 +1,10 @@
+
+@import "../../../shared.css";
+
+.home-page {
+  .user-info {
+    .user-name {
+      color: var(--text-color-2);
+    }
+  }
+}

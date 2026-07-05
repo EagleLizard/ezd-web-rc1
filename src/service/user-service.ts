@@ -1,6 +1,7 @@
 
 import { FetchClient } from '../lib/client/fetch-client';
 import { config } from '../lib/config';
+import { EzdPermission } from '../lib/models/authz/ezd-permission';
 import { EzdError } from '../lib/models/error/ezd-error';
 import { ResponseError } from '../lib/models/error/response-error';
 import { EzdUserResp } from '../lib/models/user/ezd-user-resp';
@@ -22,6 +23,7 @@ export const userService = {
   logInUser: logInUser,
   logoutUser: logoutUser,
   getWhoami: getWhoami,
+  getUserPerms: getUserPerms,
   getUsers: getUsers,
 } as const;
 
@@ -53,6 +55,19 @@ async function getWhoami(): Promise<WhoamiResp | undefined> {
   let rawRespBody = await rawResp.json();
   let whoamiResp = whoamiRespSchema.decode(rawRespBody);
   return whoamiResp;
+}
+
+async function getUserPerms(userId: string): Promise<EzdPermission[]> {
+  let url = `${config.EZD_API_BASE_URL}/v1/user/${userId}/permission`;
+  let rawResp = await _fc.get(url);
+  if(!rawResp.ok) {
+    throw new ResponseError(rawResp);
+  }
+  let rawBody = await rawResp.json();
+  if(!Array.isArray(rawBody)) {
+    throw new Error(`Expected response to be array, got: ${typeof rawBody}`);
+  }
+  return rawBody.map((rawPerm) => EzdPermission.decode(rawPerm));
 }
 
 async function logInUser(opts: LogInUserOpts): Promise<LogInUserRes> {
