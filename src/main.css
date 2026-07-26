@@ -5,10 +5,14 @@ html {
   /* html elem is base for rem */
   font-size: 16px;
   body {
+    height: 100dvh;
     background-color: var(--bg-color);
     color: var(--text-color);
     font-family: 'IBM Plex Sans', Arial, Helvetica, sans-serif;
-
+    margin: auto;
+    #ezd-web-root {
+      height: 100%;
+    }
     a {
       color: var(--link-color);
     }

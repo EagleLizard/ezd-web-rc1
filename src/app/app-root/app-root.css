@@ -2,11 +2,14 @@
 @import '../../shared.css';
 
 .ezd-app-root {
-  margin: 0 5rem;
-  div.hr {
-    padding-block: 0.5em;
-    .inner {
-      border-bottom: 1px solid var(--text-color);
-    }
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  padding: 0 5rem;
+  .app-content {
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
   }
 }

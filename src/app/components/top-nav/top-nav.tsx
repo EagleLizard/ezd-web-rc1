@@ -23,7 +23,6 @@ export function TopNav(props: TopNavProps) {
       return;
     }
     userService.getUserPerms(userCtx.activeUser.user_id).then((ezdPerms) => {
-      console.log(ezdPerms);
       setActiveUserPerms(ezdPerms);
     });
   }, [ userCtx.activeUser ]);

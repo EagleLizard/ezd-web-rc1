@@ -2,23 +2,33 @@
 @import '../../../../shared.css';
 
 .jcd-proj-preview-item {
+  --preview-img-width: 8rem;
+  --preview-img-height: 6rem;
   border: 1px solid;
   border-radius: 0.15rem;
   border-color: var(--text-clr-alt-1);
   &:hover {
     border-color: var(--text-clr-alt-2);
   }
-  .title, .content {
+  .heading, .content {
     padding-inline: 0.6rem;
     padding-top: 0.35rem;
     padding-bottom: 0.4rem;
   }
-  .title {
-    padding-top: 0.4rem;
-    padding-bottom: 0.25rem;
+  .heading {
+    display: flex;
+    border-color: inherit;
     border-bottom: 1px solid;
     border-color: inherit;
-    color: var(--text-color-3);
+    padding-top: 0.4rem;
+    padding-bottom: 0.25rem;
+    .title {
+      flex: 1 1;
+      color: var(--text-color-3);
+    }
+    .actions {
+      /* padding-right: 0.25rem; */
+    }
   }
   .content {
     display: flex;
@@ -31,9 +41,10 @@
       }
     }
     .img-item {
+      height: var(--preview-img-height);
       img {
-        max-width: 8rem;
-        max-height: 6rem;
+        max-width: var(--preview-img-width);
+        max-height: var(--preview-img-height);
       }
     }
   }

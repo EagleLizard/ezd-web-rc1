@@ -2,17 +2,37 @@
 @import '../../../shared.css';
 
 .jcd-page {
-  .jcd-proj-previews {
-    /* display: flex;
-    flex-wrap: wrap; */
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(20rem, 1fr));
-    /* gap: 0.3rem; */
-    column-gap: 0.8rem;
-    row-gap: 0.8rem;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  .proj-list-view {
+    display: flex;
+    overflow: hidden;
+    .proj-list {
+      container-type: inline-size; /* for setting scrollbar-based padding */
+      overflow-y: scroll;
+      min-width: fit-content;
+      flex: 1 1;
+      padding-bottom: 2rem;
+      scrollbar-width: thin;
+      scrollbar-color: rgb(from var(--text-color-2) r g b / 0.75) rgb(from var(--bg-color) r g b / 0.5);
 
-    .jcd-proj-preview-item {
-      /* flex-basis: 0; */
+      .jcd-proj-previews {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(20rem, 1fr));
+        /* grid-template-columns: repeat(auto-fit, minmax(20rem, 1fr)); */
+        column-gap: 0.8rem;
+        row-gap: 0.8rem;
+
+        .jcd-proj-preview-item {
+
+        }
+      }
+    }
+    .proj-pane {
+      flex: 0 1;
+      min-width: 30%;
+      padding-left: 1rem;
     }
   }
 }

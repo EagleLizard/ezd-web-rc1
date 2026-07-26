@@ -1,0 +1,9 @@
+
+@import '../../../shared.css';
+
+div.horiz-sep {
+  padding-block: 0.5em;
+  .inner {
+    border-bottom: 1px solid var(--text-color);
+  }
+}

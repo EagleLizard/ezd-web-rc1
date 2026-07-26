@@ -1,0 +1,15 @@
+
+.jcd-proj-pane {
+  --title-img-height: 12rem;
+  .heading {
+    display: flex;
+    justify-content: space-between;
+    padding-bottom: 0.35rem;
+  }
+  .title-img-item {
+    height: var(--title-img-height);
+    img {
+      max-height: var(--title-img-height);
+    }
+  }
+}
