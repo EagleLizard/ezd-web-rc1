@@ -34,6 +34,10 @@ export function JcdPage(props: JcdPageProps) {
   const navigate = useNavigate({from: '/jcd/'});
   const searchParams = useSearch({from: '/jcd/'});
 
+  const projPreviewItems = projPreviews?.filter(projPrev => {
+    return projPrev.projectKey !== selectedProjPreview?.projectKey;
+  });
+
   useEffect(() => {
     jcdService.getProjectPreviews().then((_projPreviews) => {
       setProjPreviews(_projPreviews);
@@ -43,7 +47,8 @@ export function JcdPage(props: JcdPageProps) {
   useEffect(() => {
     let foundPJrojPrev = projPreviews?.find(projPrev => projPrev.projectKey === searchParams.proj);
     setSelectedProjPreview(foundPJrojPrev);
-  }, [ searchParams ]);
+    setSelectedProj(undefined);
+  }, [ searchParams, projPreviews ]);
 
   useEffect(() => {
     if(selectedProjPreview === undefined) {
@@ -66,17 +71,28 @@ export function JcdPage(props: JcdPageProps) {
         <HorizSep></HorizSep>
       </div>
       <div className="proj-list-view">
-        <div className="proj-list">
-          <div className="jcd-proj-previews">
-            {projPreviews && projPreviews.map((projPrev) => (
+        <div className="proj-list-pane">
+          {selectedProjPreview !== undefined && (
+            <div className="selected-proj-preview">
               <JcdProjPreviewItem
-                key={projPrev.projectKey}
-                projPreview={projPrev}
-                onToggleClick={() => {
-                  handleProjPrevToggleClick(projPrev);
-                }}
+                projPreview={selectedProjPreview}
+                selected={true}
+                onToggleClick={handleProjPaneClose}
               />
-            ))}
+            </div>
+          )}
+          <div className="proj-list">
+            <div className="jcd-proj-previews">
+              {projPreviewItems && projPreviewItems.map((projPrev) => (
+                <JcdProjPreviewItem
+                  key={projPrev.projectKey}
+                  projPreview={projPrev}
+                  onToggleClick={() => {
+                    handleProjPrevToggleClick(projPrev);
+                  }}
+                />
+              ))}
+            </div>
           </div>
         </div>
         {selectedProjPreview && (

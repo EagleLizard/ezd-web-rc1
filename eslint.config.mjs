@@ -14,7 +14,7 @@ const config = [
   /* see: https://stackoverflow.com/a/77679839/4677252 */
   reactEslint.configs.flat['jsx-runtime'],
   {
-    ignores: [ 'dist' ],
+    ignores: [ 'dist', 'node_modules' ],
   },
   {
     files: [

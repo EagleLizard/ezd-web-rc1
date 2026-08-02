@@ -9,20 +9,33 @@ import { EzdIconButton } from '../../../components/ezd-icon-button/ezd-icon-butt
 
 type JcdProjPreviewItemProps = {
   projPreview: JcdProjPreview;
+  selected?: boolean;
   onToggleClick?: () => void;
 } & {};
 
 export function JcdProjPreviewItem(props: JcdProjPreviewItemProps) {
   const titleImgUrl = `${config.EZD_API_BASE_URL}/v1/jcd/img/${props.projPreview.titleUri}?width=100`;
+
+  let classNames = [
+    'jcd-proj-preview-item',
+  ];
+  if(props.selected) {
+    classNames.push('selected');
+  }
+  const classNameStr = classNames.join(' ');
   return (
-    <div className="jcd-proj-preview-item">
+    <div className={classNameStr}>
       <div className="heading">
         <div className="title">
           {props.projPreview.title}
         </div>
         <div className="actions">
           <EzdIconButton onClick={handleToggleClick}>
-            &gt;
+            {props.selected ? (
+              <>&lt;</>
+            ) : (
+              <>&gt;</>
+            )}
           </EzdIconButton>
         </div>
       </div>
@@ -31,10 +44,10 @@ export function JcdProjPreviewItem(props: JcdProjPreviewItemProps) {
           <div className="info-item">
             {props.projPreview.projectKey.split('_').map((word, idx, splat) => {
               return (
-                <>{word}{(idx < splat.length - 1)
+                <React.Fragment key={idx}>{word}{(idx < splat.length - 1)
                   ? (<><wbr/>_<wbr/></>)
                   : ''
-                }</>
+                }</React.Fragment>
               );
             })}
           </div>

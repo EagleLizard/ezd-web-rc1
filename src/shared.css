@@ -5,13 +5,23 @@
   --text-color: rgb(221, 221, 221);
   --text-color-2: rgb(175, 255, 95);
   --text-color-3: rgb(255, 218, 95);
+  --text-color-4: rgb(175, 225, 230);
 
   --border-color-2: color-mix(in srgb, var(--text-color), var(--bg-color) 60%);
+  --border-color-3: rgb(130, 130, 70);
+  --border-color-3-lite: hsl(from var(--text-clr-alt-1) h calc(s + 10) calc(l + 20));
+  --border-color-4: rgb(90, 122, 158);
+  /* --border-color-4-lite: rgb(167, 199, 228); */
+  --border-color-4-lite: hsl(from var(--border-color-4) h s calc(l + 22));
 
 
   /* --text-clr-alt-1: rgb(167, 199, 228); */
-  --text-clr-alt-1: rgb(90, 122, 158);
-  --text-clr-alt-2: rgb(167, 199, 228);
+  /* --text-clr-alt-1: rgb(90, 122, 158); */
+  /* --text-clr-alt-2: rgb(167, 199, 228); */
+
+  /* --text-clr-alt-1: rgb(170, 170, 110); */
+  --text-clr-alt-1: rgb(130, 130, 70);
+  --text-clr-alt-2: hsl(from var(--text-clr-alt-1) h calc(s + 10) calc(l + 20));
   /* --text-clr-alt-1: rgb(35, 80, 95); */
   /* --bg-color: rgb(221, 221, 221); */
   /* --text-color: rgb(25, 25, 25); */
@@ -28,4 +38,8 @@
 
   /* --spinner-color: rgb(177, 206, 182); */
   --spinner-color: rgb(177, 206, 182);
+
+  --scroll-thumb-color-1: rgb(from var(--text-color-2) r g b / 0.75);
+  --scroll-track-color-1: rgb(from var(--bg-color) r g b / 0.5);
+  --scroll-color-1: var(--scroll-thumb-color-1) var(--scroll-track-color-1);
 }

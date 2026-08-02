@@ -13,7 +13,7 @@ type EzdTextInputProps = {
     // | 'name'
     | 'value'
     | 'onChange'
-  )> & {};
+)> & {};
 
 export function EzdInput(props: EzdTextInputProps) {
   let classNames: string[];
