@@ -2,6 +2,7 @@
 import { FetchClient } from '../lib/client/fetch-client';
 import { config } from '../lib/config';
 import { EzdError } from '../lib/models/error/ezd-error';
+import { GcpNamespace } from '../lib/models/jcd/gcd-namespace';
 import { JcdProjPreview } from '../lib/models/jcd/jcd-proj-preview';
 import { JcdProject } from '../lib/models/jcd/jcd-project';
 
@@ -12,6 +13,7 @@ export const jcdService = {
   getProjectPreviewByRoute: getProjectPreviewByRoute,
   getProjects: getProjects,
   getProjectByRoute: getProjectByRoute,
+  getNamespaces: getNamespaces,
 } as const;
 
 async function getProjectPreviews(): Promise<JcdProjPreview[]> {
@@ -63,4 +65,17 @@ async function getProjectByRoute(projectRoute: string): Promise<JcdProject> {
   let rawBody = await resp.json();
   let jcdProj = JcdProject.decode(rawBody);
   return jcdProj;
+}
+
+async function getNamespaces(): Promise<GcpNamespace[]> {
+  let url = `${config.EZD_API_BASE_URL}/v1/jcd/ns`;
+  let resp = await _fc.get(url);
+  let rawBody = await resp.json();
+  if(!Array.isArray(rawBody)) {
+    throw new EzdError('Invalid response type, expected array', 'EZDW_2.1');
+  }
+  let nss = rawBody.map((rawNs) => {
+    return GcpNamespace.decode(rawNs);
+  });
+  return nss;
 }

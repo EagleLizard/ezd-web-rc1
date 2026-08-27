@@ -56,7 +56,7 @@ export function JcdProjPreviewItem(props: JcdProjPreviewItemProps) {
           </div>
           <div className="project-nav">
             <Link
-              to="/jcd/$project"
+              to="/jcd/proj/$project"
               params={{
                 project: props.projPreview.route,
               }}

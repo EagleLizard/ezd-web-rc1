@@ -6,6 +6,7 @@ import { Link } from '@tanstack/react-router';
 import { useUserContext } from '../../../service/user-context';
 import { userService } from '../../../service/user-service';
 import { EzdPermission } from '../../../lib/models/authz/ezd-permission';
+import { VertSep } from '../vert-sep/vert-sep';
 
 type TopNavProps = {
   //
@@ -40,7 +41,7 @@ export function TopNav(props: TopNavProps) {
       <div className="top-nav-link">
         <Link to="/about">about</Link>
       </div>
-      <div className="vert-sep"></div>
+      <VertSep/>
       { !userCtx.activeUser && (
         <div className="top-nav-link">
           <Link to="/login">login</Link>

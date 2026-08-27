@@ -7,6 +7,7 @@ import { JcdProject } from '../../../../lib/models/jcd/jcd-project';
 import { jcdService } from '../../../../service/jcd-service';
 import { config } from '../../../../lib/config';
 import { JcdProjPreview } from '../../../../lib/models/jcd/jcd-proj-preview';
+import { jcdUtil } from '../../../../service/jcd-util';
 
 type JcdProjectPageProps = {
   projectRoute: string;
@@ -20,9 +21,9 @@ export function JcdProjectPage(props: JcdProjectPageProps) {
   useEffect(() => {
     jcdService.getProjectByRoute(props.projectRoute).then((_jcdProj) => {
       setJcdProj(_jcdProj);
-      return jcdService.getProjectPreviewByRoute(_jcdProj.route).then((_jcdProjPreview) => {
-        setJcdProjPreview(_jcdProjPreview);
-      });
+    });
+    jcdService.getProjectPreviewByRoute(props.projectRoute).then((_jcdProjPreview) => {
+      setJcdProjPreview(_jcdProjPreview);
     });
   }, [ props.projectRoute ]);
 
@@ -36,13 +37,22 @@ export function JcdProjectPage(props: JcdProjectPageProps) {
           <div>
             <img src={titleImgUrl}/>
           </div>
-          <h1>
-            {jcdProj.title}
-          </h1>
           <div>
-            <div>{jcdProj.venue}</div>
-            <div>{jcdProj.year}</div>
+
           </div>
+          <h1>
+            {jcdProjPreview.title}
+          </h1>
+          {jcdProj && (
+            <div className="content">
+              <div className="info">
+                {jcdProj.venue}
+              </div>
+              <div className="info">
+                {jcdUtil.getDisplayDate(jcdProj.month)} {jcdProj.year}
+              </div>
+            </div>
+          )}
         </>
       )}
     </div>

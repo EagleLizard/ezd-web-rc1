@@ -45,6 +45,8 @@
       }
     }
     .img-item {
+      height: var(--preview-img-height);
+      /* width: var(--preview-img-width); */
       img {
         max-width: var(--preview-img-width);
         max-height: var(--preview-img-height);

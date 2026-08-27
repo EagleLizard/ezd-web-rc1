@@ -1,10 +1,20 @@
+@import '../../../../shared.css';
 
-@import '../../../shared.css';
-
-.jcd-page {
+.jcd-projx-page {
   display: flex;
   flex-direction: column;
   min-height: 0;
+
+  .tools {
+    padding-bottom: 0.4rem;
+    .namespace-selector {
+      display: flex;
+      .label {
+        padding-right: 0.66rem;
+      }
+    }
+  }
+
   .proj-list-view {
     display: flex;
     overflow: hidden;
@@ -14,7 +24,6 @@
       flex-direction: column;
       .selected-proj-preview {
         padding-bottom: 0.5rem;
-        /* border-bottom: 1px solid var(--border-color-4); */
         .jcd-proj-preview-item {
 
         }
@@ -22,15 +31,20 @@
       .proj-list {
         overflow-y: scroll;
         padding-bottom: 2rem;
+
         scrollbar-width: thin;
         scrollbar-color: rgb(from var(--text-color-2) r g b / 0.75) rgb(from var(--bg-color) r g b / 0.5);
 
         .jcd-proj-previews {
           display: grid;
           grid-template-columns: repeat(auto-fill, minmax(20rem, 1fr));
-          /* grid-template-columns: repeat(auto-fit, minmax(20rem, 1fr)); */
           column-gap: 0.8rem;
           row-gap: 0.8rem;
+
+          &:not(.grid) {
+            display: flex;
+            flex-wrap: wrap;
+          }
 
           .jcd-proj-preview-item {
 
@@ -39,6 +53,7 @@
       }
     }
     .proj-pane {
+      flex-shrink: 0;
       width: 40%;
       padding-left: 1rem;
     }

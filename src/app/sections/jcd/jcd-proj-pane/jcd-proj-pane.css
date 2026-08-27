@@ -2,7 +2,8 @@
 @import '../../../../shared.css';
 
 .jcd-proj-pane {
-  --title-img-height: 12rem;
+  /* --title-img-height: 18rem; */
+  --title-img-height: 30dvh;
   --field-kv-gap-pad-block: 0.25rem;
   --field-kv-gap-pad-inline: 0.35rem;
   height: 100%;
@@ -17,7 +18,7 @@
   }
   .content {
     flex-grow: 1;
-    overflow-y: scroll;
+    overflow-y: auto;
     padding-bottom: 2rem;
 
     scrollbar-width: thin;

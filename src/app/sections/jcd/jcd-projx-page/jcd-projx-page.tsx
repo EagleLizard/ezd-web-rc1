@@ -1,38 +1,30 @@
 
-import './jcd-page.css';
-import { useEffect, useState } from 'react';
+import './jcd-projx-page.css';
 
-import { jcdService } from '../../../service/jcd-service';
-import { JcdProjPreview } from '../../../lib/models/jcd/jcd-proj-preview';
-import { JcdProjPreviewItem } from './jcd-proj-preview/jcd-proj-preview-item';
-import { HorizSep } from '../../components/horiz-sep/horiz-sep';
-import { JcdProject } from '../../../lib/models/jcd/jcd-project';
-import { JcdProjPane } from './jcd-proj-pane/jcd-proj-pane';
+import { useEffect, useState } from 'react';
 import { useNavigate, useSearch } from '@tanstack/react-router';
 
-type JcdPageSection = {
-  slug: string;
-  text: string
-  title: string;
-};
-const jcd_page_sections: Record<string, JcdPageSection> = {
-  projects: {
-    slug: 'projects',
-    text: 'projects',
-    title: 'Projects',
-  }
-};
-type JcdPageProps = {
+import type { JcdProjPreview } from '../../../../lib/models/jcd/jcd-proj-preview';
+import type { JcdProject } from '../../../../lib/models/jcd/jcd-project';
+import { jcdService } from '../../../../service/jcd-service';
+
+import { JcdProjPreviewItem } from '../jcd-proj-preview/jcd-proj-preview-item';
+import { JcdProjPane } from '../jcd-proj-pane/jcd-proj-pane';
+import { GcpNamespace } from '../../../../lib/models/jcd/gcd-namespace';
+
+type JcdProjxPageProps = {
   //
 } & {};
-export function JcdPage(props: JcdPageProps) {
-  const [ projPreviews, setProjPreviews ] = useState<JcdProjPreview[]>();
-  const [ selectedProjPreview, setSelectedProjPreview ] = useState<JcdProjPreview | undefined>();
 
+export function JcdProjxPage(props: JcdProjxPageProps) {
+  const [ projPreviews, setProjPreviews ] = useState<JcdProjPreview[]>();
+  const [ nss, setNss ] = useState<GcpNamespace[]>();
+
+  const [ selectedProjPreview, setSelectedProjPreview ] = useState<JcdProjPreview | undefined>();
   const [ selectedProj, setSelectedProj ] = useState<JcdProject | undefined>();
 
-  const navigate = useNavigate({from: '/jcd/'});
-  const searchParams = useSearch({from: '/jcd/'});
+  const navigate = useNavigate({from: '/jcd/proj/'});
+  const searchParams = useSearch({from: '/jcd/proj/'});
 
   const projPreviewItems = projPreviews?.filter(projPrev => {
     return projPrev.projectKey !== selectedProjPreview?.projectKey;
@@ -41,6 +33,9 @@ export function JcdPage(props: JcdPageProps) {
   useEffect(() => {
     jcdService.getProjectPreviews().then((_projPreviews) => {
       setProjPreviews(_projPreviews);
+    });
+    jcdService.getNamespaces().then((_nss) => {
+      setNss(_nss);
     });
   }, []);
 
@@ -62,13 +57,25 @@ export function JcdPage(props: JcdPageProps) {
   }, [ selectedProjPreview ]);
 
   return (
-    <div className="jcd-page">
-      <h1>
-        jcd
-      </h1>
-      <div className="jcd-page-nav">
-        <div>projects</div>
-        <HorizSep></HorizSep>
+    <div className="jcd-projx-page">
+      <div className="tools">
+        <div className="namespace-selector">
+          <div className="label">Namespace:</div>
+          {nss !== undefined && (
+            <select onChange={($e) => {
+              console.log($e.target.value);
+            }}>
+              {nss.map((ns) => (
+                <option
+                  key={ns.name}
+                  value={ns.name}
+                >
+                  {ns.name}
+                </option>
+              ))}
+            </select>
+          )}
+        </div>
       </div>
       <div className="proj-list-view">
         <div className="proj-list-pane">
@@ -82,7 +89,7 @@ export function JcdPage(props: JcdPageProps) {
             </div>
           )}
           <div className="proj-list">
-            <div className="jcd-proj-previews">
+            <div className="jcd-proj-previews grid">
               {projPreviewItems && projPreviewItems.map((projPrev) => (
                 <JcdProjPreviewItem
                   key={projPrev.projectKey}
