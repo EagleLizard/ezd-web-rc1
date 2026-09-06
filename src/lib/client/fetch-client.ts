@@ -49,7 +49,6 @@ export class FetchClient {
       body: getBodyOpt(opts),
       credentials: opts.credentials ?? 'include',
     };
-    console.log(reqInit);
     return fetch(url, reqInit);
   }
   delete(url: string, opts: FetchClientReqOpts = {}): Promise<Response> {

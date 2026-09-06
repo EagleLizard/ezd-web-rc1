@@ -1,0 +1,21 @@
+
+.jcd-env-main {
+  .ezd-select {
+    display: flex;
+    gap: 0.5rem;
+  }
+  .copy-select-group {
+    display: flex;
+    column-gap: 0.5rem;
+  }
+}
+
+.jcd-env-confirm-copy-modal {
+  .modal-content {
+    .modal-actions {
+      padding-top: 0.5rem;
+      display: flex;
+      column-gap: 0.5rem;
+    }
+  }
+}

@@ -11,6 +11,7 @@ type EzdButtonProps = {
   | 'type'
   | 'aria-label'
   | 'title'
+  | 'disabled'
 )> & {};
 
 export function EzdButton(props: EzdButtonProps) {
@@ -37,6 +38,7 @@ export function EzdButton(props: EzdButtonProps) {
       tabIndex={tabIndex}
       aria-label={props['aria-label']}
       title={props.title}
+      disabled={props.disabled}
     >
       { props.children }
     </button>
