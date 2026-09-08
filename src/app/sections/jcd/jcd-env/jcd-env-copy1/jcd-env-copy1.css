@@ -1,5 +1,5 @@
 
-.jcd-env-main {
+.jcd-env-copy1 {
   .ezd-select {
     display: flex;
     gap: 0.5rem;
@@ -14,7 +14,7 @@
   }
 }
 
-.jcd-env-confirm-copy-modal {
+.jcd-env-confirm-copy1-modal {
   .modal-content {
     .modal-actions {
       padding-top: 0.5rem;

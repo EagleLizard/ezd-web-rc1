@@ -1,24 +1,24 @@
 
-import './jcd-env-main.css';
+import './jcd-env-copy1.css';
 
 import { ChangeEvent, MouseEvent, useEffect, useState } from 'react';
-import { jcdService } from '../../../../service/jcd-service';
-import { GcpKeyDto } from '../../../../lib/models/jcd/gcp-key-dto';
-import { EzdButton } from '../../../components/ezd-button/ezd-button';
-import { HorizSep } from '../../../components/horiz-sep/horiz-sep';
+import { jcdService } from '../../../../../service/jcd-service';
+import { GcpKeyDto } from '../../../../../lib/models/jcd/gcp-key-dto';
+import { EzdButton } from '../../../../components/ezd-button/ezd-button';
+import { HorizSep } from '../../../../components/horiz-sep/horiz-sep';
 import { useNavigate, useSearch } from '@tanstack/react-router';
-import { GcpNamespace } from '../../../../lib/models/jcd/gcd-namespace';
-import { EzdModal } from '../../../components/ezd-modal/ezd-modal';
-import { ResponseError } from '../../../../lib/models/error/response-error';
-import { EzdIconButton } from '../../../components/ezd-icon-button/ezd-icon-button';
+import { GcpNamespace } from '../../../../../lib/models/jcd/gcd-namespace';
+import { EzdModal } from '../../../../components/ezd-modal/ezd-modal';
+import { ResponseError } from '../../../../../lib/models/error/response-error';
+import { EzdIconButton } from '../../../../components/ezd-icon-button/ezd-icon-button';
 
 const default_env_id = jcdService.default_env_id;
 const none_option_value = '__none';
 
-type JcdEnvMain = {
+type JcdEnvCopy1Props = {
   //
 } & {};
-export function JcdEnvMain(props: JcdEnvMain){
+export function JcdEnvCopy1(props: JcdEnvCopy1Props){
   let [ envs, setEnvs ] = useState<GcpNamespace[] | undefined>();
   let [ envKinds, setEnvKinds ] = useState<GcpKeyDto[] | undefined>();
   let [ kindEntityKeys, setKindEntityKeys ] = useState<GcpKeyDto[] | undefined>();
@@ -125,7 +125,7 @@ export function JcdEnvMain(props: JcdEnvMain){
   }, [ selectedEntity ]);
 
   return (
-    <div className="jcd-env-main">
+    <div className="jcd-env-copy1">
       <h1>jcd env</h1>
       <HorizSep/>
       <div className="op-selector">
@@ -262,7 +262,7 @@ export function JcdEnvMain(props: JcdEnvMain){
         </div>
       </div>
       <EzdModal
-        className="jcd-env-confirm-copy-modal"
+        className="jcd-env-confirm-copy1-modal"
         show={showCopyModal}
         onClose={handleCopyModalClose}
       >

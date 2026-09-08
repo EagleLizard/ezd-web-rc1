@@ -1,7 +1,7 @@
 
 import { createFileRoute } from '@tanstack/react-router';
 
-import { JcdEnvMain } from '../../../app/sections/jcd/jcd-env/jcd-env-main';
+import { JcdEnvCopy1 } from '../../../app/sections/jcd/jcd-env/jcd-env-copy1/jcd-env-main';
 import { prim } from '../../../lib/util/validate-primitives';
 
 type JcdEnvCopy1SearchParams = {
@@ -47,6 +47,6 @@ export const Route = createFileRoute('/jcd/env/copy1')({
 
 function RouteComponent() {
   return (
-    <JcdEnvMain/>
+    <JcdEnvCopy1/>
   );
 }

@@ -1,6 +1,6 @@
 
-import { Link } from '@tanstack/react-router';
 import './jcd-nav.css';
+import { Link } from '@tanstack/react-router';
 import { HorizSep } from '../../../components/horiz-sep/horiz-sep';
 import { VertSep } from '../../../components/vert-sep/vert-sep';
 
