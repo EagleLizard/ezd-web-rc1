@@ -8,6 +8,10 @@
     display: flex;
     column-gap: 0.5rem;
   }
+  .source-selector {
+    display: flex;
+    column-gap: 0.5rem;
+  }
 }
 
 .jcd-env-confirm-copy-modal {

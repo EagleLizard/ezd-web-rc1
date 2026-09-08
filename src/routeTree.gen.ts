@@ -15,9 +15,10 @@ import { Route as LoginIndexRouteImport } from './routes/login/index'
 import { Route as JcdIndexRouteImport } from './routes/jcd/index'
 import { Route as UserUsernameRouteImport } from './routes/user/$username'
 import { Route as AdminChar123SectionChar125RouteImport } from './routes/admin/{-$section}'
+import { Route as JcdEnvRouteRouteImport } from './routes/jcd/env/route'
 import { Route as JcdProjIndexRouteImport } from './routes/jcd/proj/index'
-import { Route as JcdNsIndexRouteImport } from './routes/jcd/ns/index'
 import { Route as JcdProjProjectRouteImport } from './routes/jcd/proj/$project'
+import { Route as JcdEnvCopy1RouteImport } from './routes/jcd/env/copy1'
 
 const AboutRoute = AboutRouteImport.update({
   id: '/about',
@@ -50,14 +51,14 @@ const AdminChar123SectionChar125Route =
     path: '/admin/{-$section}',
     getParentRoute: () => rootRouteImport,
   } as any)
+const JcdEnvRouteRoute = JcdEnvRouteRouteImport.update({
+  id: '/jcd/env',
+  path: '/jcd/env',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const JcdProjIndexRoute = JcdProjIndexRouteImport.update({
   id: '/jcd/proj/',
   path: '/jcd/proj/',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const JcdNsIndexRoute = JcdNsIndexRouteImport.update({
-  id: '/jcd/ns/',
-  path: '/jcd/ns/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const JcdProjProjectRoute = JcdProjProjectRouteImport.update({
@@ -65,39 +66,47 @@ const JcdProjProjectRoute = JcdProjProjectRouteImport.update({
   path: '/jcd/proj/$project',
   getParentRoute: () => rootRouteImport,
 } as any)
+const JcdEnvCopy1Route = JcdEnvCopy1RouteImport.update({
+  id: '/copy1',
+  path: '/copy1',
+  getParentRoute: () => JcdEnvRouteRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/jcd/env': typeof JcdEnvRouteRouteWithChildren
   '/admin/{-$section}': typeof AdminChar123SectionChar125Route
   '/user/$username': typeof UserUsernameRoute
   '/jcd/': typeof JcdIndexRoute
   '/login/': typeof LoginIndexRoute
+  '/jcd/env/copy1': typeof JcdEnvCopy1Route
   '/jcd/proj/$project': typeof JcdProjProjectRoute
-  '/jcd/ns/': typeof JcdNsIndexRoute
   '/jcd/proj/': typeof JcdProjIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/jcd/env': typeof JcdEnvRouteRouteWithChildren
   '/admin/{-$section}': typeof AdminChar123SectionChar125Route
   '/user/$username': typeof UserUsernameRoute
   '/jcd': typeof JcdIndexRoute
   '/login': typeof LoginIndexRoute
+  '/jcd/env/copy1': typeof JcdEnvCopy1Route
   '/jcd/proj/$project': typeof JcdProjProjectRoute
-  '/jcd/ns': typeof JcdNsIndexRoute
   '/jcd/proj': typeof JcdProjIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/jcd/env': typeof JcdEnvRouteRouteWithChildren
   '/admin/{-$section}': typeof AdminChar123SectionChar125Route
   '/user/$username': typeof UserUsernameRoute
   '/jcd/': typeof JcdIndexRoute
   '/login/': typeof LoginIndexRoute
+  '/jcd/env/copy1': typeof JcdEnvCopy1Route
   '/jcd/proj/$project': typeof JcdProjProjectRoute
-  '/jcd/ns/': typeof JcdNsIndexRoute
   '/jcd/proj/': typeof JcdProjIndexRoute
 }
 export interface FileRouteTypes {
@@ -105,46 +114,49 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/about'
+    | '/jcd/env'
     | '/admin/{-$section}'
     | '/user/$username'
     | '/jcd/'
     | '/login/'
+    | '/jcd/env/copy1'
     | '/jcd/proj/$project'
-    | '/jcd/ns/'
     | '/jcd/proj/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/about'
+    | '/jcd/env'
     | '/admin/{-$section}'
     | '/user/$username'
     | '/jcd'
     | '/login'
+    | '/jcd/env/copy1'
     | '/jcd/proj/$project'
-    | '/jcd/ns'
     | '/jcd/proj'
   id:
     | '__root__'
     | '/'
     | '/about'
+    | '/jcd/env'
     | '/admin/{-$section}'
     | '/user/$username'
     | '/jcd/'
     | '/login/'
+    | '/jcd/env/copy1'
     | '/jcd/proj/$project'
-    | '/jcd/ns/'
     | '/jcd/proj/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AboutRoute: typeof AboutRoute
+  JcdEnvRouteRoute: typeof JcdEnvRouteRouteWithChildren
   AdminChar123SectionChar125Route: typeof AdminChar123SectionChar125Route
   UserUsernameRoute: typeof UserUsernameRoute
   JcdIndexRoute: typeof JcdIndexRoute
   LoginIndexRoute: typeof LoginIndexRoute
   JcdProjProjectRoute: typeof JcdProjProjectRoute
-  JcdNsIndexRoute: typeof JcdNsIndexRoute
   JcdProjIndexRoute: typeof JcdProjIndexRoute
 }
 
@@ -192,18 +204,18 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminChar123SectionChar125RouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/jcd/env': {
+      id: '/jcd/env'
+      path: '/jcd/env'
+      fullPath: '/jcd/env'
+      preLoaderRoute: typeof JcdEnvRouteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/jcd/proj/': {
       id: '/jcd/proj/'
       path: '/jcd/proj'
       fullPath: '/jcd/proj/'
       preLoaderRoute: typeof JcdProjIndexRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/jcd/ns/': {
-      id: '/jcd/ns/'
-      path: '/jcd/ns'
-      fullPath: '/jcd/ns/'
-      preLoaderRoute: typeof JcdNsIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/jcd/proj/$project': {
@@ -213,18 +225,37 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof JcdProjProjectRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/jcd/env/copy1': {
+      id: '/jcd/env/copy1'
+      path: '/copy1'
+      fullPath: '/jcd/env/copy1'
+      preLoaderRoute: typeof JcdEnvCopy1RouteImport
+      parentRoute: typeof JcdEnvRouteRoute
+    }
   }
 }
+
+interface JcdEnvRouteRouteChildren {
+  JcdEnvCopy1Route: typeof JcdEnvCopy1Route
+}
+
+const JcdEnvRouteRouteChildren: JcdEnvRouteRouteChildren = {
+  JcdEnvCopy1Route: JcdEnvCopy1Route,
+}
+
+const JcdEnvRouteRouteWithChildren = JcdEnvRouteRoute._addFileChildren(
+  JcdEnvRouteRouteChildren,
+)
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AboutRoute: AboutRoute,
+  JcdEnvRouteRoute: JcdEnvRouteRouteWithChildren,
   AdminChar123SectionChar125Route: AdminChar123SectionChar125Route,
   UserUsernameRoute: UserUsernameRoute,
   JcdIndexRoute: JcdIndexRoute,
   LoginIndexRoute: LoginIndexRoute,
   JcdProjProjectRoute: JcdProjProjectRoute,
-  JcdNsIndexRoute: JcdNsIndexRoute,
   JcdProjIndexRoute: JcdProjIndexRoute,
 }
 export const routeTree = rootRouteImport

@@ -4,13 +4,17 @@ import { config } from '../lib/config';
 import { EzdError } from '../lib/models/error/ezd-error';
 import { ResponseError } from '../lib/models/error/response-error';
 import { GcpNamespace } from '../lib/models/jcd/gcd-namespace';
-import { GcpKeyDto } from '../lib/models/jcd/gcp-kind';
+import { GcpKeyDto } from '../lib/models/jcd/gcp-key-dto';
 import { JcdProjPreview } from '../lib/models/jcd/jcd-proj-preview';
 import { JcdProject } from '../lib/models/jcd/jcd-project';
+
+const default_env_id = '1';
 
 const _fc = FetchClient.init();
 
 export const jcdService = {
+  default_env_id: default_env_id,
+
   getProjectPreviews: getProjectPreviews,
   getProjectPreviewByRoute: getProjectPreviewByRoute,
   getProjects: getProjects,

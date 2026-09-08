@@ -20,8 +20,8 @@ export function JcdNav(props: JcdNavProps) {
           Projects
         </Link>
         <VertSep/>
-        <Link to="/jcd/ns">
-          NS
+        <Link to="/jcd/env">
+          Env
         </Link>
       </div>
       <HorizSep/>

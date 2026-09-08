@@ -3,7 +3,7 @@ import './jcd-env-main.css';
 
 import { ChangeEvent, MouseEvent, useEffect, useState } from 'react';
 import { jcdService } from '../../../../service/jcd-service';
-import { GcpKeyDto } from '../../../../lib/models/jcd/gcp-kind';
+import { GcpKeyDto } from '../../../../lib/models/jcd/gcp-key-dto';
 import { EzdButton } from '../../../components/ezd-button/ezd-button';
 import { HorizSep } from '../../../components/horiz-sep/horiz-sep';
 import { useNavigate, useSearch } from '@tanstack/react-router';
@@ -12,7 +12,7 @@ import { EzdModal } from '../../../components/ezd-modal/ezd-modal';
 import { ResponseError } from '../../../../lib/models/error/response-error';
 import { EzdIconButton } from '../../../components/ezd-icon-button/ezd-icon-button';
 
-const default_env_id = '1';
+const default_env_id = jcdService.default_env_id;
 const none_option_value = '__none';
 
 type JcdEnvMain = {
@@ -33,8 +33,8 @@ export function JcdEnvMain(props: JcdEnvMain){
 
   let [ errorMsg, setErrorMsg ] = useState<string | undefined>();
 
-  const navigate = useNavigate({ from: '/jcd/ns/' });
-  const searchParams = useSearch({ from: '/jcd/ns/' });
+  const navigate = useNavigate({ from: '/jcd/env/copy1' });
+  const searchParams = useSearch({ from: '/jcd/env/copy1' });
 
   const srcEnvMatchesTargetEnv = (
     (selectedEnv === undefined && selectedTargetEnv?.id === default_env_id)
@@ -46,6 +46,10 @@ export function JcdEnvMain(props: JcdEnvMain){
     && selectedEntity !== undefined
     && !srcEnvMatchesTargetEnv
   );
+  const sourceEnvKey = (selectedEnv?.id === default_env_id)
+    ? undefined
+    : selectedEnv?.name
+  ;
 
   useEffect(() => {
     jcdService.getNamespaces().then(nss => {
@@ -98,11 +102,7 @@ export function JcdEnvMain(props: JcdEnvMain){
     if(selectedEnv === undefined) {
       return;
     }
-    let env = selectedEnv.id === default_env_id
-      ? undefined
-      : selectedEnv.name
-    ;
-    jcdService.getKinds(env).then((jcdKinds) => {
+    jcdService.getKinds(sourceEnvKey).then((jcdKinds) => {
       setEnvKinds(jcdKinds);
     });
   }, [ selectedEnv ]);
@@ -113,7 +113,7 @@ export function JcdEnvMain(props: JcdEnvMain){
     if(selectedEnvKind === undefined) {
       return;
     }
-    jcdService.getKindEntityKeys(selectedEnvKind.name).then(entityKeys => {
+    jcdService.getKindEntityKeys(selectedEnvKind.name, sourceEnvKey).then(entityKeys => {
       setKindEntityKeys(entityKeys);
     });
   }, [ selectedEnvKind ]);
@@ -146,7 +146,7 @@ export function JcdEnvMain(props: JcdEnvMain){
           </div>
         </div>
       )}
-      <div className="copy-select-group">
+      <div className="source-selector">
         <div className="ezd-select env-selector">
           <div className="select-label">source env:</div>
           <select onChange={handleEnvSelect}>
@@ -159,9 +159,13 @@ export function JcdEnvMain(props: JcdEnvMain){
             {envs?.map(env => {
               return (
                 <option
-                  selected={selectedEnv?.name === env.name}
+                  selected={
+                    (env.id === jcdService.default_env_id)
+                      ? selectedEnv?.id === env.id
+                      : selectedEnv?.name === env.name
+                  }
                   key={env.name}
-                  value={env.id === default_env_id ? env.id : env.name}
+                  value={env.id === jcdService.default_env_id ? env.id : env.name}
                 >
                   {env.name}
                 </option>
@@ -169,57 +173,65 @@ export function JcdEnvMain(props: JcdEnvMain){
             })}
           </select>
         </div>
-        <div className="ezd-select copy-to-selector">
-          <div className="label">target env:</div>
-          <select onChange={handleTargetEnvSelect}>
-            <option
-              selected={selectedTargetEnv === undefined}
-              value={none_option_value}
-            >
+        <div className="ezd-select kind-selector">
+          <div className="select-label">
+            kind:
+          </div>
+          <select
+            disabled={envKinds === undefined}
+            onChange={handleKindSelect}
+          >
+            <option selected={selectedEnvKind === undefined} value={none_option_value}>
               -- none --
             </option>
-            {envs?.map(env => {
+            {envKinds?.map((kind) => {
               return (
                 <option
-                  selected={selectedTargetEnv?.name === env.name}
-                  key={env.name}
-                  value={env.id === default_env_id ? env.id : env.name}
+                  selected={selectedEnvKind?.name === kind.name}
+                  key={kind.name}
+                  value={kind.name}
                 >
-                  {env.name}
+                  {kind.name}
+                </option>
+              );
+            })}
+          </select>
+        </div>
+        <div className="ezd-select entity-selector">
+          <div className="select-label">
+            entity:
+          </div>
+          <select
+            onChange={handleEntitySelect}
+            disabled={kindEntityKeys === undefined}
+          >
+            <option selected={selectedEntity === undefined} value={none_option_value}>-- none --</option>
+            {kindEntityKeys?.map(entityKey => {
+              return (
+                <option
+                  selected={selectedEntity?.name === entityKey.name}
+                  key={entityKey.name}
+                  value={entityKey.name}
+                >
+                  {entityKey.name}
                 </option>
               );
             })}
           </select>
         </div>
       </div>
-      <div className="ezd-select kind-selector">
-        <div className="select-label">
-          kind:
-        </div>
-        <select disabled={envKinds === undefined} onChange={handleKindSelect}>
-          <option selected={selectedEnvKind === undefined} value={none_option_value}>-- none --</option>
-          {envKinds?.map((envKind) => {
+      <div className="ezd-select copy-to-selector">
+        <div className="label">target env:</div>
+        <select onChange={handleTargetEnvSelect}>
+          <option selected={selectedTargetEnv === undefined} value={none_option_value}>-- none --</option>
+          {envs?.map(env => {
             return (
-              <option selected={selectedEnvKind?.name === envKind.name} key={envKind.name} value={envKind.name}>
-                {envKind.name}
-              </option>
-            );
-          })}
-        </select>
-      </div>
-      <div className="ezd-select entity-selector">
-        <div className="select-label">
-          entity:
-        </div>
-        <select
-          onChange={handleEntitySelect}
-          disabled={selectedEnvKind === undefined}
-        >
-          <option selected={selectedEntity === undefined} value={none_option_value}>-- none --</option>
-          {kindEntityKeys?.map(entityKey => {
-            return (
-              <option selected={selectedEntity?.name === entityKey.name} key={entityKey.name} value={entityKey.name}>
-                {entityKey.name}
+              <option
+                selected={selectedTargetEnv?.name === env.name}
+                key={env.name}
+                value={env.id === default_env_id ? env.id : env.name}
+              >
+                {env.name}
               </option>
             );
           })}
@@ -276,19 +288,26 @@ export function JcdEnvMain(props: JcdEnvMain){
   );
 
   function handleEnvSelect($e: ChangeEvent<HTMLSelectElement, HTMLSelectElement>) {
-    let val = ($e.target.value === none_option_value)
+    let val = ($e.target.value === none_option_value || $e.target.value === jcdService.default_env_id)
       ? undefined
       : $e.target.value
     ;
-    if(val === default_env_id) {
-      /* default env is the same as no query param _*/
-      val = undefined;
-    }
     setNavQs({
       env: val,
       ekind: undefined,
       ename: undefined,
     });
+  }
+  function handleKindSelect($e: ChangeEvent<HTMLSelectElement, HTMLSelectElement>) {
+    let val = ($e.target.value === none_option_value) ? undefined : $e.target.value;
+    setNavQs({
+      ekind: val,
+      ename: undefined,
+    });
+  }
+  function handleEntitySelect($e: ChangeEvent<HTMLSelectElement, HTMLSelectElement>) {
+    let val = ($e.target.value === none_option_value) ? undefined : $e.target.value;
+    setNavQs({ ename: val });
   }
   function handleTargetEnvSelect($e: ChangeEvent<HTMLSelectElement, HTMLSelectElement>) {
     let toenvVal = ($e.target.value === none_option_value)
@@ -298,17 +317,6 @@ export function JcdEnvMain(props: JcdEnvMain){
     setNavQs({
       toenv: toenvVal,
     });
-  }
-  function handleKindSelect($e: ChangeEvent<HTMLSelectElement, HTMLSelectElement>) {
-    let val = $e.target.value === none_option_value ? undefined : $e.target.value;
-    setNavQs({
-      ekind: val ,
-      ename: undefined,
-    });
-  }
-  function handleEntitySelect($e: ChangeEvent<HTMLSelectElement, HTMLSelectElement>) {
-    let val = $e.target.value === none_option_value ? undefined : $e.target.value;
-    setNavQs({ ename: val });
   }
 
   function handleCopyBtnClick($e: MouseEvent<HTMLButtonElement>) {
@@ -322,16 +330,12 @@ export function JcdEnvMain(props: JcdEnvMain){
       /* Should be an invalid state _*/
       return;
     }
-    let fromEnv = selectedEnv?.id === default_env_id
-      ? undefined
-      : selectedEnv?.name
-    ;
     let toEnv = selectedTargetEnv.id === default_env_id
       ? selectedTargetEnv.id
       : selectedTargetEnv.name
     ;
     let copyOpts: Parameters<typeof jcdService.postCopyEnvEntity>[0] = {
-      fromEnv: fromEnv,
+      fromEnv: sourceEnvKey,
       toEnv: toEnv,
       kind: selectedEnvKind.name,
       name: selectedEntity.name,
@@ -351,6 +355,13 @@ export function JcdEnvMain(props: JcdEnvMain){
           }
         });
       }
+      return err.resp.json().then(rawBody => {
+        if('message' in rawBody) {
+          setErrorMsg(rawBody.message);
+        } else {
+          setErrorMsg(JSON.stringify(rawBody));
+        }
+      });
     }).finally(() => {
       setShowCopyModal(false);
     });
