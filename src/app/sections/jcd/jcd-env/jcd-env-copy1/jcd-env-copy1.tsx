@@ -7,24 +7,23 @@ import { GcpKeyDto } from '../../../../../lib/models/jcd/gcp-key-dto';
 import { EzdButton } from '../../../../components/ezd-button/ezd-button';
 import { HorizSep } from '../../../../components/horiz-sep/horiz-sep';
 import { useNavigate, useSearch } from '@tanstack/react-router';
-import { GcpNamespace } from '../../../../../lib/models/jcd/gcd-namespace';
 import { EzdModal } from '../../../../components/ezd-modal/ezd-modal';
 import { ResponseError } from '../../../../../lib/models/error/response-error';
 import { EzdIconButton } from '../../../../components/ezd-icon-button/ezd-icon-button';
+import { JcdEnv } from '../../../../../lib/models/jcd/jcd-env';
 
-const default_env_id = jcdService.default_env_id;
 const none_option_value = '__none';
 
 type JcdEnvCopy1Props = {
   //
 } & {};
 export function JcdEnvCopy1(props: JcdEnvCopy1Props){
-  let [ envs, setEnvs ] = useState<GcpNamespace[] | undefined>();
+  let [ envs, setEnvs ] = useState<JcdEnv[] | undefined>();
   let [ envKinds, setEnvKinds ] = useState<GcpKeyDto[] | undefined>();
   let [ kindEntityKeys, setKindEntityKeys ] = useState<GcpKeyDto[] | undefined>();
 
-  let [ selectedEnv, setSelectedEnv ] = useState<GcpNamespace | undefined>();
-  let [ selectedTargetEnv, setSelectedTargetEnv ] = useState<GcpNamespace | undefined>();
+  let [ selectedEnv, setSelectedEnv ] = useState<JcdEnv | undefined>();
+  let [ selectedTargetEnv, setSelectedTargetEnv ] = useState<JcdEnv | undefined>();
   let [ selectedEnvKind, setSelectedEnvKind ] = useState<GcpKeyDto | undefined>();
   let [ selectedEntity, setSelectedEntity ] = useState<GcpKeyDto | undefined>();
   let [ entityPreview, setEntityPreview ] = useState<unknown>();
@@ -37,8 +36,8 @@ export function JcdEnvCopy1(props: JcdEnvCopy1Props){
   const searchParams = useSearch({ from: '/jcd/env/copy1' });
 
   const srcEnvMatchesTargetEnv = (
-    (selectedEnv === undefined && selectedTargetEnv?.id === default_env_id)
-    || (selectedEnv?.name === selectedTargetEnv?.name)
+    (selectedEnv === undefined && selectedTargetEnv?.isDefault)
+    || (selectedEnv?.key === selectedTargetEnv?.key)
   );
   const copyEnabled = (
     selectedTargetEnv !== undefined
@@ -46,43 +45,33 @@ export function JcdEnvCopy1(props: JcdEnvCopy1Props){
     && selectedEntity !== undefined
     && !srcEnvMatchesTargetEnv
   );
-  const sourceEnvKey = (selectedEnv?.id === default_env_id)
+  const sourceEnvKey = (selectedEnv?.isDefault)
     ? undefined
-    : selectedEnv?.name
+    : selectedEnv?.key
   ;
 
   useEffect(() => {
     jcdService.getNamespaces().then(nss => {
-      setEnvs(nss);
+      setEnvs(nss.map(ns => JcdEnv.fromGcpNamespace(ns)));
     });
   }, []);
   useEffect(() => {
     if(envs !== undefined && (
       selectedEnv === undefined
-      || (selectedEnv.id !== default_env_id && searchParams.env !== selectedEnv.name)
-      || (selectedEnv.id === default_env_id && searchParams.env !== undefined)
+      || (selectedEnv.isDefault)
+        ? searchParams.env !== undefined
+        : searchParams.env !== selectedEnv.key
     )) {
-      let foundEnv: GcpNamespace | undefined;
+      let foundEnv: JcdEnv | undefined;
       if(searchParams.env === undefined) {
-        foundEnv = envs.find(env => env.id === default_env_id);
+        foundEnv = envs.find(env => env.isDefault);
       } else {
-        foundEnv = envs.find(env => env.name === searchParams.env);
+        foundEnv = envs.find(env => env.key === searchParams.env);
       }
       setSelectedEnv(foundEnv);
     }
-    if(envs !== undefined && (
-      (searchParams.toenv === default_env_id && (
-        searchParams.toenv !== selectedTargetEnv?.id
-      )) || (
-        searchParams.toenv !== selectedTargetEnv?.name
-      )
-    )) {
-      let foundTargetEnv = envs.find(env => {
-        if(env.id === default_env_id) {
-          return env.id === searchParams.toenv;
-        }
-        return env.name === searchParams.toenv;
-      });
+    if(envs !== undefined && searchParams.toenv !== selectedTargetEnv?.key) {
+      let foundTargetEnv = envs.find(env => env.key === searchParams.toenv);
       setSelectedTargetEnv(foundTargetEnv);
     }
     if(envKinds !== undefined && searchParams.ekind !== selectedEnvKind?.name) {
@@ -159,13 +148,9 @@ export function JcdEnvCopy1(props: JcdEnvCopy1Props){
             {envs?.map(env => {
               return (
                 <option
-                  selected={
-                    (env.id === jcdService.default_env_id)
-                      ? selectedEnv?.id === env.id
-                      : selectedEnv?.name === env.name
-                  }
-                  key={env.name}
-                  value={env.id === jcdService.default_env_id ? env.id : env.name}
+                  selected={env.key === selectedEnv?.key}
+                  key={env.key}
+                  value={env.key}
                 >
                   {env.name}
                 </option>
@@ -227,9 +212,9 @@ export function JcdEnvCopy1(props: JcdEnvCopy1Props){
           {envs?.map(env => {
             return (
               <option
-                selected={selectedTargetEnv?.name === env.name}
-                key={env.name}
-                value={env.id === default_env_id ? env.id : env.name}
+                selected={selectedTargetEnv?.key === env.key}
+                key={env.key}
+                value={env.key}
               >
                 {env.name}
               </option>
@@ -320,7 +305,7 @@ export function JcdEnvCopy1(props: JcdEnvCopy1Props){
   }
 
   function handleCopyBtnClick($e: MouseEvent<HTMLButtonElement>) {
-    if(selectedTargetEnv?.id === default_env_id) {
+    if(selectedTargetEnv?.isDefault) {
       setShowCopyModal(true);
     }
     setShowCopyModal(true);
@@ -330,13 +315,9 @@ export function JcdEnvCopy1(props: JcdEnvCopy1Props){
       /* Should be an invalid state _*/
       return;
     }
-    let toEnv = selectedTargetEnv.id === default_env_id
-      ? selectedTargetEnv.id
-      : selectedTargetEnv.name
-    ;
     let copyOpts: Parameters<typeof jcdService.postCopyEnvEntity>[0] = {
       fromEnv: sourceEnvKey,
-      toEnv: toEnv,
+      toEnv: selectedTargetEnv.key,
       kind: selectedEnvKind.name,
       name: selectedEntity.name,
     };
