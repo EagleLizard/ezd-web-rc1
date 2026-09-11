@@ -11,8 +11,14 @@ import { EzdModal } from '../../../../components/ezd-modal/ezd-modal';
 import { ResponseError } from '../../../../../lib/models/error/response-error';
 import { EzdIconButton } from '../../../../components/ezd-icon-button/ezd-icon-button';
 import { JcdEnv } from '../../../../../lib/models/jcd/jcd-env';
+import { EzdSelect } from '../../../../components/ezd-select/ezd-select';
 
 const none_option_value = '__none';
+const none_option_label = '-- none --';
+const none_option = {
+  value: none_option_value,
+  label: none_option_label,
+} as const;
 
 type JcdEnvCopy1Props = {
   //
@@ -137,88 +143,40 @@ export function JcdEnvCopy1(props: JcdEnvCopy1Props){
       <div className="source-selector">
         <div className="ezd-select env-selector">
           <div className="select-label">source env:</div>
-          <select
-            value={selectedEnv?.key ?? none_option_value}
+          <EzdSelect
+            data={[ none_option, ...(envs?.map(env => ({value: env.key, label: env.name})) ?? []) ]}
+            value={selectedEnv?.key ?? none_option.value}
             onChange={handleEnvSelect}
-          >
-            <option value={none_option_value}>
-              -- none --
-            </option>
-            {envs?.map(env => {
-              return (
-                <option
-                  key={env.key}
-                  value={env.key}
-                >
-                  {env.name}
-                </option>
-              );
-            })}
-          </select>
+          />
         </div>
         <div className="ezd-select kind-selector">
           <div className="select-label">
             kind:
           </div>
-          <select
-            value={selectedEnvKind?.name ?? none_option_value}
+          <EzdSelect
+            data={[ none_option, ...(envKinds?.map(kind => kind.name) ?? []) ]}
+            value={selectedEnvKind?.name ?? none_option.value}
             onChange={handleKindSelect}
-          >
-            <option value={none_option_value}>
-              -- none --
-            </option>
-            {envKinds?.map((kind) => {
-              return (
-                <option
-                  key={kind.name}
-                  value={kind.name}
-                >
-                  {kind.name}
-                </option>
-              );
-            })}
-          </select>
+          />
         </div>
         <div className="ezd-select entity-selector">
           <div className="select-label">
             entity:
           </div>
-          <select
-            value={selectedEntity?.name ?? none_option_value}
+          <EzdSelect
+            data={[ none_option, ...(kindEntityKeys?.map(entityKey => entityKey.name) ?? []) ]}
+            value={selectedEntity?.name ?? none_option.value}
             onChange={handleEntitySelect}
-          >
-            <option value={none_option_value}>-- none --</option>
-            {kindEntityKeys?.map(entityKey => {
-              return (
-                <option
-                  key={entityKey.name}
-                  value={entityKey.name}
-                >
-                  {entityKey.name}
-                </option>
-              );
-            })}
-          </select>
+          />
         </div>
       </div>
       <div className="ezd-select copy-to-selector">
         <div className="label">target env:</div>
-        <select
+        <EzdSelect
+          data={[ none_option, ...(envs?.map(env => ({ value: env.key, label: env.name })) ?? []) ]}
           value={selectedTargetEnv?.key ?? none_option_value}
           onChange={handleTargetEnvSelect}
-        >
-          <option value={none_option_value}>-- none --</option>
-          {envs?.map(env => {
-            return (
-              <option
-                key={env.key}
-                value={env.key}
-              >
-                {env.name}
-              </option>
-            );
-          })}
-        </select>
+        />
       </div>
       <div className="copy-button">
         <EzdButton
