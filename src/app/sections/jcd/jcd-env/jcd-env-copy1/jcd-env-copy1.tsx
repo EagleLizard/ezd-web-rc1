@@ -58,9 +58,8 @@ export function JcdEnvCopy1(props: JcdEnvCopy1Props){
   useEffect(() => {
     if(envs !== undefined && (
       selectedEnv === undefined
-      || (selectedEnv.isDefault)
-        ? searchParams.env !== undefined
-        : searchParams.env !== selectedEnv.key
+      || (selectedEnv.isDefault && searchParams.env !== undefined)
+      || (!selectedEnv.isDefault && searchParams.env !== selectedEnv.key)
     )) {
       let foundEnv: JcdEnv | undefined;
       if(searchParams.env === undefined) {
@@ -138,17 +137,16 @@ export function JcdEnvCopy1(props: JcdEnvCopy1Props){
       <div className="source-selector">
         <div className="ezd-select env-selector">
           <div className="select-label">source env:</div>
-          <select onChange={handleEnvSelect}>
-            <option
-              selected={selectedEnv === undefined}
-              value={none_option_value}
-            >
+          <select
+            value={selectedEnv?.key ?? none_option_value}
+            onChange={handleEnvSelect}
+          >
+            <option value={none_option_value}>
               -- none --
             </option>
             {envs?.map(env => {
               return (
                 <option
-                  selected={env.key === selectedEnv?.key}
                   key={env.key}
                   value={env.key}
                 >
@@ -163,16 +161,15 @@ export function JcdEnvCopy1(props: JcdEnvCopy1Props){
             kind:
           </div>
           <select
-            disabled={envKinds === undefined}
+            value={selectedEnvKind?.name ?? none_option_value}
             onChange={handleKindSelect}
           >
-            <option selected={selectedEnvKind === undefined} value={none_option_value}>
+            <option value={none_option_value}>
               -- none --
             </option>
             {envKinds?.map((kind) => {
               return (
                 <option
-                  selected={selectedEnvKind?.name === kind.name}
                   key={kind.name}
                   value={kind.name}
                 >
@@ -187,14 +184,13 @@ export function JcdEnvCopy1(props: JcdEnvCopy1Props){
             entity:
           </div>
           <select
+            value={selectedEntity?.name ?? none_option_value}
             onChange={handleEntitySelect}
-            disabled={kindEntityKeys === undefined}
           >
-            <option selected={selectedEntity === undefined} value={none_option_value}>-- none --</option>
+            <option value={none_option_value}>-- none --</option>
             {kindEntityKeys?.map(entityKey => {
               return (
                 <option
-                  selected={selectedEntity?.name === entityKey.name}
                   key={entityKey.name}
                   value={entityKey.name}
                 >
@@ -207,12 +203,14 @@ export function JcdEnvCopy1(props: JcdEnvCopy1Props){
       </div>
       <div className="ezd-select copy-to-selector">
         <div className="label">target env:</div>
-        <select onChange={handleTargetEnvSelect}>
-          <option selected={selectedTargetEnv === undefined} value={none_option_value}>-- none --</option>
+        <select
+          value={selectedTargetEnv?.key ?? none_option_value}
+          onChange={handleTargetEnvSelect}
+        >
+          <option value={none_option_value}>-- none --</option>
           {envs?.map(env => {
             return (
               <option
-                selected={selectedTargetEnv?.key === env.key}
                 key={env.key}
                 value={env.key}
               >
