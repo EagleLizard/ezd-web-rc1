@@ -5,6 +5,7 @@ import { EzdError } from '../lib/models/error/ezd-error';
 import { ResponseError } from '../lib/models/error/response-error';
 import { GcpNamespace } from '../lib/models/jcd/gcd-namespace';
 import { GcpKeyDto } from '../lib/models/jcd/gcp-key-dto';
+import { JcdProjKeyDto } from '../lib/models/jcd/jcd-proj-key-dto';
 import { JcdProjPreview } from '../lib/models/jcd/jcd-proj-preview';
 import { JcdProject } from '../lib/models/jcd/jcd-project';
 
@@ -24,12 +25,12 @@ export const jcdService = {
   getKindEntityKeys: getKindEntityKeys,
   getKindEntityByName: getKindEntityByName,
   postCopyEnvEntity: postCopyEnvEntity,
+
+  getProjKeys,
 } as const;
 
 async function getProjectPreviews(): Promise<JcdProjPreview[]> {
-  let usp = new URLSearchParams({
-    preview: 'true',
-  });
+  let usp = new URLSearchParams({ preview: 'true' });
   let url = `${config.EZD_API_BASE_URL}/v1/jcd/project?${usp.toString()}`;
   let resp = await _fc.get(url);
   let rawRespBody = await resp.json();
@@ -67,9 +68,7 @@ async function getProjects(): Promise<JcdProjPreview[]> {
 }
 
 async function getProjectByRoute(projectRoute: string): Promise<JcdProject> {
-  let usp = new URLSearchParams({
-    route: projectRoute,
-  });
+  let usp = new URLSearchParams({ route: projectRoute });
   let url = `${config.EZD_API_BASE_URL}/v1/jcd/project?${usp.toString()}`;
   let resp = await _fc.get(url);
   let rawBody = await resp.json();
@@ -84,18 +83,14 @@ async function getNamespaces(): Promise<GcpNamespace[]> {
   if(!Array.isArray(rawBody)) {
     throw new EzdError('Invalid response type, expected array', 'EZDW_2.1');
   }
-  let nss = rawBody.map((rawNs) => {
-    return GcpNamespace.decode(rawNs);
-  });
+  let nss = rawBody.map((rawNs) =>  GcpNamespace.decode(rawNs));
   return nss;
 }
 
 async function getKinds(ns?: string): Promise<GcpKeyDto[]> {
   let url = `${config.EZD_API_BASE_URL}/v1/jcd/env/kind`;
   if(ns !== undefined) {
-    let usp = new URLSearchParams({
-      ns: ns,
-    });
+    let usp = new URLSearchParams({ ns: ns });
     url = `${url}?${usp.toString()}`;
   }
   let resp = await _fc.get(url);
@@ -110,9 +105,7 @@ async function getKinds(ns?: string): Promise<GcpKeyDto[]> {
 async function getKindEntityKeys(kind: string, ns?: string): Promise<GcpKeyDto[]> {
   let url = `${config.EZD_API_BASE_URL}/v1/jcd/env/kind/${kind}`;
   if(ns !== undefined) {
-    let usp = new URLSearchParams({
-      ns: ns,
-    });
+    let usp = new URLSearchParams({ ns: ns });
     url = `${url}?${usp.toString()}`;
   }
   let resp = await _fc.get(url);
@@ -125,9 +118,7 @@ async function getKindEntityKeys(kind: string, ns?: string): Promise<GcpKeyDto[]
 }
 
 async function getKindEntityByName(kind: string, name: string, ns?: string): Promise<unknown> {
-  let usp = new URLSearchParams({
-    name: name,
-  });
+  let usp = new URLSearchParams({ name: name });
   if(ns !== undefined) {
     usp.append('ns', ns);
   }
@@ -149,12 +140,27 @@ async function postCopyEnvEntity(opts: {
     kind: opts.kind,
     name: opts.name,
   };
-  let resp = await _fc.post(url, {
-    body: body,
-  });
+  let resp = await _fc.post(url, { body: body });
   if(resp.status !== 200) {
     throw new ResponseError(resp);
   }
   let rawBody = await resp.json();
   return rawBody;
+}
+
+async function getProjKeys(env?: string): Promise<JcdProjKeyDto[]> {
+  let url = `${config.EZD_API_BASE_URL}/v1/jcd/env/proj`;
+  if(env !== undefined) {
+    let usp = new URLSearchParams({ env: env });
+    url = `${url}?${usp.toString()}`;
+  }
+  let resp = await _fc.get(url);
+  if(resp.status !== 200) {
+    throw new ResponseError(resp);
+  }
+  let rawBody = await resp.json();
+  if(!Array.isArray(rawBody)) {
+    throw new EzdError('Invalid response type, expected array', 'EZDW_2.1');
+  }
+  return rawBody.map(rawVal => JcdProjKeyDto.decode(rawVal));
 }

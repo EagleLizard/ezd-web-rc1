@@ -17,6 +17,7 @@ import { Route as UserUsernameRouteImport } from './routes/user/$username'
 import { Route as AdminChar123SectionChar125RouteImport } from './routes/admin/{-$section}'
 import { Route as JcdEnvRouteRouteImport } from './routes/jcd/env/route'
 import { Route as JcdProjIndexRouteImport } from './routes/jcd/proj/index'
+import { Route as JcdEnvIndexRouteImport } from './routes/jcd/env/index'
 import { Route as JcdProjProjectRouteImport } from './routes/jcd/proj/$project'
 import { Route as JcdEnvCopy1RouteImport } from './routes/jcd/env/copy1'
 
@@ -61,6 +62,11 @@ const JcdProjIndexRoute = JcdProjIndexRouteImport.update({
   path: '/jcd/proj/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const JcdEnvIndexRoute = JcdEnvIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => JcdEnvRouteRoute,
+} as any)
 const JcdProjProjectRoute = JcdProjProjectRouteImport.update({
   id: '/jcd/proj/$project',
   path: '/jcd/proj/$project',
@@ -82,18 +88,19 @@ export interface FileRoutesByFullPath {
   '/login/': typeof LoginIndexRoute
   '/jcd/env/copy1': typeof JcdEnvCopy1Route
   '/jcd/proj/$project': typeof JcdProjProjectRoute
+  '/jcd/env/': typeof JcdEnvIndexRoute
   '/jcd/proj/': typeof JcdProjIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
-  '/jcd/env': typeof JcdEnvRouteRouteWithChildren
   '/admin/{-$section}': typeof AdminChar123SectionChar125Route
   '/user/$username': typeof UserUsernameRoute
   '/jcd': typeof JcdIndexRoute
   '/login': typeof LoginIndexRoute
   '/jcd/env/copy1': typeof JcdEnvCopy1Route
   '/jcd/proj/$project': typeof JcdProjProjectRoute
+  '/jcd/env': typeof JcdEnvIndexRoute
   '/jcd/proj': typeof JcdProjIndexRoute
 }
 export interface FileRoutesById {
@@ -107,6 +114,7 @@ export interface FileRoutesById {
   '/login/': typeof LoginIndexRoute
   '/jcd/env/copy1': typeof JcdEnvCopy1Route
   '/jcd/proj/$project': typeof JcdProjProjectRoute
+  '/jcd/env/': typeof JcdEnvIndexRoute
   '/jcd/proj/': typeof JcdProjIndexRoute
 }
 export interface FileRouteTypes {
@@ -121,18 +129,19 @@ export interface FileRouteTypes {
     | '/login/'
     | '/jcd/env/copy1'
     | '/jcd/proj/$project'
+    | '/jcd/env/'
     | '/jcd/proj/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/about'
-    | '/jcd/env'
     | '/admin/{-$section}'
     | '/user/$username'
     | '/jcd'
     | '/login'
     | '/jcd/env/copy1'
     | '/jcd/proj/$project'
+    | '/jcd/env'
     | '/jcd/proj'
   id:
     | '__root__'
@@ -145,6 +154,7 @@ export interface FileRouteTypes {
     | '/login/'
     | '/jcd/env/copy1'
     | '/jcd/proj/$project'
+    | '/jcd/env/'
     | '/jcd/proj/'
   fileRoutesById: FileRoutesById
 }
@@ -218,6 +228,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof JcdProjIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/jcd/env/': {
+      id: '/jcd/env/'
+      path: '/'
+      fullPath: '/jcd/env/'
+      preLoaderRoute: typeof JcdEnvIndexRouteImport
+      parentRoute: typeof JcdEnvRouteRoute
+    }
     '/jcd/proj/$project': {
       id: '/jcd/proj/$project'
       path: '/jcd/proj/$project'
@@ -237,10 +254,12 @@ declare module '@tanstack/react-router' {
 
 interface JcdEnvRouteRouteChildren {
   JcdEnvCopy1Route: typeof JcdEnvCopy1Route
+  JcdEnvIndexRoute: typeof JcdEnvIndexRoute
 }
 
 const JcdEnvRouteRouteChildren: JcdEnvRouteRouteChildren = {
   JcdEnvCopy1Route: JcdEnvCopy1Route,
+  JcdEnvIndexRoute: JcdEnvIndexRoute,
 }
 
 const JcdEnvRouteRouteWithChildren = JcdEnvRouteRoute._addFileChildren(

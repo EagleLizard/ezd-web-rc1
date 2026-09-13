@@ -4,7 +4,6 @@ import './ezd-select.css';
 import React from 'react';
 import { prim } from '../../../lib/util/validate-primitives';
 
-
 /*
 initial aim: basic interface similar to mantine NativeSelect:
   https://mantine.dev/core/native-select

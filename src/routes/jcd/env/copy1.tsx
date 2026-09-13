@@ -15,32 +15,12 @@ type JcdEnvCopy1SearchParams = {
 export const Route = createFileRoute('/jcd/env/copy1')({
   component: RouteComponent,
   validateSearch: (searchParams): JcdEnvCopy1SearchParams => {
-    let op: string | undefined;
-    let env: string | undefined;
-    let toenv: string | undefined;
-    let ekind: string | undefined;
-    let ename: string | undefined;
-    if(prim.isString(searchParams.op)) {
-      op = searchParams.op;
-    }
-    if(prim.isString(searchParams.env)) {
-      env = searchParams.env;
-    }
-    if(prim.isString(searchParams.toenv)) {
-      toenv = searchParams.toenv;
-    }
-    if(prim.isString(searchParams.ekind)) {
-      ekind = searchParams.ekind;
-    }
-    if(prim.isString(searchParams.ename)) {
-      ename = searchParams.ename;
-    }
     return {
-      op: op,
-      env: env,
-      toenv: toenv,
-      ekind: ekind,
-      ename: ename,
+      op: prim.stringOrVoid(searchParams.op),
+      env: prim.stringOrVoid(searchParams.env),
+      toenv: prim.stringOrVoid(searchParams.toenv),
+      ekind: prim.stringOrVoid(searchParams.ekind),
+      ename: prim.stringOrVoid(searchParams.ename),
     };
   },
 });

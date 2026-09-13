@@ -1,7 +1,7 @@
 
 /* typebox utils */
 
-import type { StaticDecode, TSchema } from 'typebox';
+import type { StaticDecode, StaticType, TSchema } from 'typebox';
 import { DecodeError, Value } from 'typebox/value';
 import { EzdError } from '../models/error/ezd-error';
 
@@ -9,7 +9,11 @@ export const tbUtil = {
   decodeWithSchema: decodeWithSchema,
 } as const;
 
-function decodeWithSchema<S extends TSchema>(tschema: S, rawVal: unknown): StaticDecode<S> {
+function decodeWithSchema<
+  S extends TSchema,
+  /* eslint-disable-next-line @typescript-eslint/no-empty-object-type */
+  T extends StaticType<[], 'Decode', {}, {}, S> = StaticDecode<S>
+>(tschema: S, rawVal: unknown): StaticDecode<S> {
   let decoded: StaticDecode<S>;
   try {
     decoded = Value.Decode(tschema, rawVal);
