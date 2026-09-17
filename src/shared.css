@@ -1,11 +1,15 @@
 
 :root {
+  --font-sz: 16px;
+
   --bg-color: rgb(25, 25, 25);
   --bg-color-lite: rgb(35, 35, 35);
   --text-color: rgb(221, 221, 221);
   --text-color-2: rgb(175, 255, 95);
   --text-color-3: rgb(255, 218, 95);
   --text-color-4: rgb(175, 225, 230);
+
+  --text-bg-hilite-color-1: rgb(98, 114, 80);
 
   --border-color-2: color-mix(in srgb, var(--text-color), var(--bg-color) 60%);
   --border-color-3: rgb(130, 130, 70);

@@ -1,0 +1,66 @@
+
+@import '../../../shared.css';
+
+.ezd-combobox {
+  .combobox-label {
+    font-size: 0.77rem;
+  }
+  .input-group {
+    position: relative;
+    box-sizing: border-box;
+    width: fit-content;
+    input.combobox-input {
+      /* field-sizing: content; */
+      padding-right: calc(0.25rem + 2rem); /* padding + size of two buttons */
+    }
+
+    .combobox-actions {
+      display: flex;
+      position: absolute;
+      bottom: 0;
+      right: 0;
+      height: 100%;
+      .combo-btn {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-sizing: border-box;
+        border: none;
+        padding: 0;
+        background: none;
+        width: 1rem;
+      }
+    }
+  }
+}
+
+.ezd-combobox-popup {
+  --combo-bg-color: rgb(from var(--bg-color) r g b / 0.8);
+  background-color: var(--combo-bg-color);
+  border: 1px solid var(--text-color);
+  .popup-content {
+    max-height: 12rem;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    scrollbar-width: thin;
+    scrollbar-color: var(--scroll-color-1);
+  }
+  .empty {
+    padding: 0.25rem;
+  }
+  .combobox-item {
+    display: grid;
+    grid-template-columns: 1rem 1fr;
+    padding: 0.25rem;
+    &[data-highlighted] {
+      background-color: var(--text-bg-hilite-color-1);
+    }
+    .item-indicator {
+      grid-column-start: 1;
+      padding-right: 0.5rem;
+    }
+    .item-text {
+      grid-column-start: 2;
+    }
+  }
+}
