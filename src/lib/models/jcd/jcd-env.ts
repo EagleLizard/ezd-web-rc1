@@ -20,7 +20,9 @@ export class JcdEnv {
     this.name = name;
     this.isDefault = this.key === jcdService.default_env_id;
   }
-
+  static init(key: string, name: string = key): JcdEnv {
+    return new JcdEnv(key, name);
+  }
   static fromGcpNamespace(gcpNamespace: GcpNamespace): JcdEnv {
     let key = (gcpNamespace.id === jcdService.default_env_id)
       ? gcpNamespace.id

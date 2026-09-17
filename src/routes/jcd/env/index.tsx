@@ -5,12 +5,16 @@ import { prim } from '../../../lib/util/validate-primitives';
 
 type JcdEnvMainSearchParams = {
   env?: string;
-};
+  proj?: string;
+  toenv?: string;
+} & {};
 export const Route = createFileRoute('/jcd/env/')({
   component: RouteComponent,
   validateSearch: (searchParams): JcdEnvMainSearchParams => {
     return {
       env: prim.stringOrVoid(searchParams.env),
+      proj: prim.stringOrVoid(searchParams.proj),
+      toenv: prim.stringOrVoid(searchParams.toenv),
     };
   },
 });

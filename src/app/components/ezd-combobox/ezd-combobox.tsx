@@ -1,6 +1,6 @@
 
 import './ezd-combobox.css';
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { Combobox } from '@base-ui/react';
 import { prim } from '../../../lib/util/validate-primitives';
 

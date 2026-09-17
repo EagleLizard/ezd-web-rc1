@@ -8,7 +8,7 @@ import { prim } from '../../../lib/util/validate-primitives';
 initial aim: basic interface similar to mantine NativeSelect:
   https://mantine.dev/core/native-select
 _*/
-type EzdSelectBasicItem = {
+export type EzdSelectBasicItem = {
   value: string;
   label?: string;
   disabled?: boolean;
@@ -37,6 +37,7 @@ type EzdSelectProps = {
   | 'id'
   | 'value'
   | 'onChange'
+  | 'disabled'
 )> & {};
 export function EzdSelect(props: EzdSelectProps) {
   const id = props.id ?? React.useId();
@@ -54,6 +55,7 @@ export function EzdSelect(props: EzdSelectProps) {
       id={id}
       className={classNameStr}
       value={props.value}
+      disabled={props.disabled}
       onChange={props.onChange}
     >
       {selectItems.map((item) => (
