@@ -59,6 +59,7 @@ export class FetchClient {
       method: 'DELETE',
       headers: this.getHeadersOpt(opts),
       body: getBodyOpt(opts),
+      credentials: opts.credentials ?? 'include',
     };
     return fetch(url, reqInit);
   }

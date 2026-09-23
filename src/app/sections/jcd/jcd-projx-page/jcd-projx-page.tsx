@@ -1,7 +1,7 @@
 
 import './jcd-projx-page.css';
 
-import { useEffect, useState } from 'react';
+import { ChangeEvent, useEffect, useState } from 'react';
 import { useNavigate, useSearch } from '@tanstack/react-router';
 
 import type { JcdProjPreview } from '../../../../lib/models/jcd/jcd-proj-preview';
@@ -11,17 +11,24 @@ import { jcdService } from '../../../../service/jcd-service';
 import { JcdProjPreviewItem } from '../jcd-proj-preview/jcd-proj-preview-item';
 import { JcdProjPane } from '../jcd-proj-pane/jcd-proj-pane';
 import { GcpNamespace } from '../../../../lib/models/jcd/gcd-namespace';
+import { EzdSelect } from '../../../components/ezd-select/ezd-select';
+import { JcdEnv } from '../../../../lib/models/jcd/jcd-env';
+
+const none_option = {
+  value: '__none',
+  label: '-- none --',
+} as const;
 
 type JcdProjxPageProps = {
   //
 } & {};
-
 export function JcdProjxPage(props: JcdProjxPageProps) {
   const [ projPreviews, setProjPreviews ] = useState<JcdProjPreview[]>();
-  const [ nss, setNss ] = useState<GcpNamespace[]>();
+  const [ envs, setEnvs ] = useState<JcdEnv[] | undefined>();
 
   const [ selectedProjPreview, setSelectedProjPreview ] = useState<JcdProjPreview | undefined>();
   const [ selectedProj, setSelectedProj ] = useState<JcdProject | undefined>();
+  const [ selectedEnv, setSelectedEnv ] = useState<JcdEnv | undefined>();
 
   const navigate = useNavigate({from: '/jcd/proj/'});
   const searchParams = useSearch({from: '/jcd/proj/'});
@@ -30,20 +37,43 @@ export function JcdProjxPage(props: JcdProjxPageProps) {
     return projPrev.projectKey !== selectedProjPreview?.projectKey;
   });
 
-  useEffect(() => {
-    jcdService.getProjectPreviews().then((_projPreviews) => {
-      setProjPreviews(_projPreviews);
-    });
-    jcdService.getNamespaces().then((_nss) => {
-      setNss(_nss);
-    });
-  }, []);
+  const envSelectItems = [
+    ...(envs?.map(env => ({ value: env.key, label: env.name })) ?? [])
+  ];
 
   useEffect(() => {
-    let foundPJrojPrev = projPreviews?.find(projPrev => projPrev.projectKey === searchParams.proj);
-    setSelectedProjPreview(foundPJrojPrev);
+    jcdService.getNamespaces().then((nss) => {
+      setEnvs(nss.map(JcdEnv.fromGcpNamespace));
+    });
+  }, []);
+  useEffect(() => {
+    if(selectedEnv === undefined) {
+      return;
+    }
+    let envKey = selectedEnv?.isDefault ? undefined : selectedEnv?.key;
+    setProjPreviews(undefined);
+    jcdService.getProjectPreviews(envKey).then((_projPreviews) => {
+      setProjPreviews(_projPreviews);
+    });
+  }, [ selectedEnv ]);
+
+  useEffect(() => {
+    let foundProjPrev = projPreviews?.find(projPrev => projPrev.projectKey === searchParams.proj);
+    setSelectedProjPreview(foundProjPrev);
     setSelectedProj(undefined);
-  }, [ searchParams, projPreviews ]);
+  }, [ searchParams.proj, projPreviews ]);
+  useEffect(() => {
+    if(envs === undefined) {
+      return;
+    }
+    let foundEnv = envs.find(env => {
+      if(searchParams.env === undefined) {
+        return env.isDefault;
+      }
+      return env.key === searchParams.env;
+    });
+    setSelectedEnv(foundEnv);
+  }, [ searchParams.env, envs ]);
 
   useEffect(() => {
     if(selectedProjPreview === undefined) {
@@ -59,22 +89,13 @@ export function JcdProjxPage(props: JcdProjxPageProps) {
   return (
     <div className="jcd-projx-page">
       <div className="tools">
-        <div className="namespace-selector">
-          <div className="label">Namespace:</div>
-          {nss !== undefined && (
-            <select onChange={($e) => {
-              console.log($e.target.value);
-            }}>
-              {nss.map((ns) => (
-                <option
-                  key={ns.name}
-                  value={ns.name}
-                >
-                  {ns.name}
-                </option>
-              ))}
-            </select>
-          )}
+        <div className="env-selector">
+          <div className="label">Env: </div>
+          <EzdSelect
+            data={envSelectItems}
+            value={selectedEnv?.key ?? none_option.value}
+            onChange={handleEnvSelect}
+          />
         </div>
       </div>
       <div className="proj-list-view">
@@ -115,9 +136,21 @@ export function JcdProjxPage(props: JcdProjxPageProps) {
     </div>
   );
   function handleProjPrevToggleClick(projPrev: JcdProjPreview) {
-    navigate({search: (prev) => ({...prev, proj: projPrev.projectKey}) });
+    setNavQs({ proj: projPrev.projectKey });
   }
   function handleProjPaneClose() {
     navigate(({search: (prev) => ({...prev, proj: undefined})}));
+  }
+  function handleEnvSelect($e: ChangeEvent<HTMLSelectElement, HTMLSelectElement>) {
+    let val = ($e.target.value === jcdService.default_env_id)
+      ? undefined
+      : $e.target.value
+    ;
+    setNavQs({ env: val });
+  }
+  function setNavQs(params: typeof searchParams = {}) {
+    navigate({
+      search: (prev) => ({ ...prev, ...params }),
+    });
   }
 }

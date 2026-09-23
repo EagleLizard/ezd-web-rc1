@@ -5,14 +5,14 @@ import { JcdPage } from '../../../app/sections/jcd/jcd-page/jcd-page';
 
 type JcdProjectsPageSearchParams = {
   proj?: string;
-  ns?: string;
+  env?: string;
 }
 
 export const Route = createFileRoute('/jcd/proj/')({
   validateSearch: (searchParams): JcdProjectsPageSearchParams => {
     return {
       proj: prim.stringOrVoid(searchParams.proj),
-      ns: prim.stringOrVoid(searchParams.ns),
+      env: prim.stringOrVoid(searchParams.env),
     };
   },
   component: RouteComponent,

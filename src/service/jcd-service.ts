@@ -5,6 +5,7 @@ import { EzdError } from '../lib/models/error/ezd-error';
 import { ResponseError } from '../lib/models/error/response-error';
 import { GcpNamespace } from '../lib/models/jcd/gcd-namespace';
 import { GcpKeyDto } from '../lib/models/jcd/gcp-key-dto';
+import { JcdEnvCopyResDto } from '../lib/models/jcd/jcd-env-copy-res-dto';
 import { JcdProjKeyDto } from '../lib/models/jcd/jcd-proj-key-dto';
 import { JcdProjPreview } from '../lib/models/jcd/jcd-proj-preview';
 import { JcdProject } from '../lib/models/jcd/jcd-project';
@@ -27,10 +28,15 @@ export const jcdService = {
   postCopyEnvEntity: postCopyEnvEntity,
 
   getProjKeys,
+  postCopyProj,
+  deleteProjV3,
 } as const;
 
-async function getProjectPreviews(): Promise<JcdProjPreview[]> {
+async function getProjectPreviews(env?: string): Promise<JcdProjPreview[]> {
   let usp = new URLSearchParams({ preview: 'true' });
+  if(env !== undefined) {
+    usp.append('ns', env);
+  }
   let url = `${config.EZD_API_BASE_URL}/v1/jcd/project?${usp.toString()}`;
   let resp = await _fc.get(url);
   let rawRespBody = await resp.json();
@@ -163,4 +169,46 @@ async function getProjKeys(env?: string): Promise<JcdProjKeyDto[]> {
     throw new EzdError('Invalid response type, expected array', 'EZDW_2.1');
   }
   return rawBody.map(rawVal => JcdProjKeyDto.decode(rawVal));
+}
+
+type JcdPostCopyProjOpts = {
+  projKey: string;
+  fromEnv?: string;
+  toEnv: string;
+} & {};
+async function postCopyProj(opts: JcdPostCopyProjOpts): Promise<JcdEnvCopyResDto> {
+  let url = `${config.EZD_API_BASE_URL}/v1/jcd/env/proj/${opts.projKey}/copy`;
+  let body = {
+    fromEnv: opts.fromEnv,
+    toEnv: opts.toEnv,
+  };
+  let resp = await _fc.post(url, { body });
+  if(resp.status !== 200) {
+    throw new ResponseError(resp);
+  }
+  let rawResp = await resp.json();
+  let res = JcdEnvCopyResDto.decode(rawResp);
+  return res;
+}
+
+type DeleteJcdProjV3Opts = {
+  env?: string;
+  deleteImages?: boolean;
+} & {};
+async function deleteProjV3(projKey: string, opts: DeleteJcdProjV3Opts = {}) {
+  let usp = new URLSearchParams();
+  let url = `${config.EZD_API_BASE_URL}/v1/jcd/env/proj/${projKey}`;
+  if(opts.env !== undefined) {
+    usp.set('env', opts.env);
+  }
+  if(opts.deleteImages === true) {
+    usp.set('img', 'true');
+  }
+  if(usp.size > 0) {
+    url = `${url}?${usp.toString()}`;
+  }
+  let resp = await _fc.delete(url);
+  if(resp.status !== 200) {
+    throw new ResponseError(resp);
+  }
 }

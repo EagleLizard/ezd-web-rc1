@@ -8,6 +8,11 @@ import { jcdService } from '../../../../service/jcd-service';
 import { EzdSelect, EzdSelectBasicItem } from '../../../components/ezd-select/ezd-select';
 import { EzdCombobox } from '../../../components/ezd-combobox/ezd-combobox';
 import { JcdEnv } from '../../../../lib/models/jcd/jcd-env';
+import { EzdButton } from '../../../components/ezd-button/ezd-button';
+import { EzdModal } from '../../../components/ezd-modal/ezd-modal';
+import { JcdEnvCopyResDto } from '../../../../lib/models/jcd/jcd-env-copy-res-dto';
+import { EzdIconButton } from '../../../components/ezd-icon-button/ezd-icon-button';
+import { EzdInput } from '../../../components/ezd-input/ezd-input';
 
 const none_option = {
   value: '__none',
@@ -27,6 +32,10 @@ export function JcdEnvMain(props: JcdEnvMainProps) {
 
   let [ srcEnv, setSrcEnv ] = useState<JcdEnv|undefined>();
   let [ selectedProjKey, setSelectedProjKey ] = useState<JcdProjKeyDto | undefined>();
+  let [ copyRes, setCopyRes ] = useState<JcdEnvCopyResDto | undefined>();
+  let [ newEnvName, setNewEnvName ] = useState<string | undefined>();
+
+  const [ showOpModal, setShowOpModal ] = useState(false);
 
   const navigate = useNavigate({ from: '/jcd/env/' });
   const searchParams = useSearch({ from: '/jcd/env/' });
@@ -49,10 +58,25 @@ export function JcdEnvMain(props: JcdEnvMainProps) {
   ;
   const destEnv = destEnvs.find(env => env.key === searchParams.toenv);
 
+  const copyEnabled = (
+    srcEnv !== undefined
+    && destEnv !== undefined
+    && selectedProjKey !== undefined
+    && srcEnv.key !== destEnv.key
+    && (
+      (destEnv.key === new_env_option.value)
+        ? newEnvName && newEnvName.length > 0
+        : true
+    )
+  );
+  const deleteEnabled = (
+    srcEnv !== undefined
+    && destEnv === undefined
+    && selectedProjKey !== undefined
+  );
+
   useEffect(() => {
-    jcdService.getNamespaces().then(nss => {
-      setEnvs(nss.map(JcdEnv.fromGcpNamespace));
-    });
+    fetchEnvs();
   }, []);
   useEffect(() => {
     if(envs === undefined) {
@@ -89,7 +113,7 @@ export function JcdEnvMain(props: JcdEnvMainProps) {
       <div className="heading">jcd env main</div>
       <div className="content">
         <div className="source-selector">
-          <div className="source-select env-selector">
+          <div className="proj-select env-selector">
             <div className="select-label">source env:</div>
             <EzdSelect
               data={srcEnvSelectItems}
@@ -97,7 +121,7 @@ export function JcdEnvMain(props: JcdEnvMainProps) {
               onChange={handleEnvSelect}
             />
           </div>
-          <div className="source-select proj-key-selector">
+          <div className="proj-select proj-key-selector">
             <EzdCombobox
               placeholder={none_option.label}
               label="Proj Key"
@@ -107,7 +131,9 @@ export function JcdEnvMain(props: JcdEnvMainProps) {
               onChange={handleProjKeySelect}
             />
           </div>
-          <div className="source-select dest-env-selector">
+        </div>
+        <div className="dest-selector">
+          <div className="proj-select dest-env-selector">
             <div className="select-label">target env:</div>
             <EzdSelect
               data={destEnvSelectItems}
@@ -116,33 +142,138 @@ export function JcdEnvMain(props: JcdEnvMainProps) {
               onChange={handleDestEnvSelect}
             />
           </div>
+          {destEnv?.key === new_env_option.value && (
+            <div className="new-env">
+              <EzdInput
+                label="New env:"
+                value={newEnvName}
+                invalid={newEnvName !== undefined && newEnvName.length < 1}
+                onChange={($e) => {
+                  setNewEnvName($e.target.value);
+                }}
+              />
+            </div>
+          )}
+        </div>
+        <div className="action-group">
+          <EzdButton
+            className="env-op-btn"
+            disabled={!copyEnabled}
+            onClick={handleCopyClick}
+          >
+            Copy
+          </EzdButton>
+          <EzdButton
+            className="env-op-btn"
+            disabled={!deleteEnabled}
+            onClick={handleDeleteClick}
+          >
+            Delete
+          </EzdButton>
         </div>
       </div>
+      {copyRes && (
+        <div className="copy-results">
+          <EzdIconButton onClick={() => {
+            setCopyRes(undefined);
+          }}>X</EzdIconButton>
+          <div>Copy result:</div>
+          <div>
+            inserted: {copyRes.ops.inserted.length}, skipped: {copyRes.ops.skipped.length}
+          </div>
+        </div>
+      )}
+      <EzdModal
+        className="env-op-modal"
+        show={showOpModal}
+        onClose={closeOpModal}
+      >
+        <div>
+          oops
+        </div>
+      </EzdModal>
     </div>
   );
+
+  function fetchEnvs() {
+    return jcdService.getNamespaces().then(nss => {
+      setEnvs(nss.map(JcdEnv.fromGcpNamespace));
+    });
+  }
+
+  function closeOpModal() {
+    setShowOpModal(false);
+  }
+  function handleDeleteClick() {
+    if(selectedProjKey === undefined) {
+      return;
+    }
+    jcdService.deleteProjV3(selectedProjKey.projectKey, {
+      env: srcEnv?.key,
+      deleteImages: true,
+    }).then(res => {
+      console.log(res);
+      return fetchEnvs();
+    }).catch(err => {
+      console.error(err);
+    });
+  }
+  function handleCopyClick() {
+    /*
+    show the confirm modal for dest target + default
+    _*/
+    if(destEnv?.isDefault) {
+      setShowOpModal(true);
+      return;
+    }
+    if(!copyEnabled) {
+      return;
+    }
+    let fromEnv = srcEnv.isDefault ? undefined : srcEnv.key;
+    let toEnv: string;
+    if(destEnv.key === new_env_option.value) {
+      if(newEnvName === undefined || newEnvName.length < 1) {
+        /* should not be possible/reachable _*/
+        return;
+      }
+      toEnv = newEnvName;
+    } else {
+      toEnv = destEnv.key;
+    }
+    setCopyRes(undefined);
+    jcdService.postCopyProj({
+      projKey: selectedProjKey.projectKey,
+      fromEnv: fromEnv,
+      toEnv: toEnv,
+    }).then((res) => {
+      setCopyRes(res);
+      if(destEnv.key === new_env_option.value) {
+        return fetchEnvs().then(() => {
+          setNewEnvName(undefined);
+          setNavQs({ toenv: toEnv  });
+        });
+      }
+    }).catch(e => {
+      console.error(e);
+    });
+  }
+
   function handleEnvSelect($e: ChangeEvent<HTMLSelectElement, HTMLSelectElement>) {
     let val = ($e.target.value === none_option.value || $e.target.value === jcdService.default_env_id)
       ? undefined
       : $e.target.value
     ;
-    setNavQs({
-      env: val,
-    });
+    setNavQs({ env: val });
   }
   function handleProjKeySelect(val?: string) {
-    console.log(val);
-    setNavQs({
-      proj: val,
-    });
+    setNavQs({ proj: val });
   }
   function handleDestEnvSelect($e: ChangeEvent<HTMLSelectElement, HTMLSelectElement>) {
-    let toenvVal = ($e.target.validationMessage === none_option.value)
+    let toenvVal = ($e.target.value === none_option.value)
       ? undefined
       : $e.target.value
     ;
-    setNavQs({
-      toenv: toenvVal,
-    });
+    setNavQs({ toenv: toenvVal });
   }
   function setNavQs(opts: typeof searchParams = {}) {
     navigate({

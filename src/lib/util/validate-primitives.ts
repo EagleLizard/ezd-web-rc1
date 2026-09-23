@@ -7,7 +7,7 @@ export const prim = {
   stringOrVoid,
 } as const;
 
-function isObject(val: unknown): val is Record<string | number, unknown> {
+function isObject(val: unknown): val is Record<string | number | symbol, unknown> {
   return (
     (val !== null)
     && ((typeof val) === 'object')

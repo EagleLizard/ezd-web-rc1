@@ -1,3 +1,26 @@
-.jcd-env-main {
 
+.jcd-env-main {
+  .source-selector {
+    display: flex;
+    column-gap: 0.25rem;
+  }
+  .proj-select {
+    .select-label {
+      font-size: 0.77rem;
+    }
+  }
+  .dest-selector {
+    display: flex;
+    column-gap: 0.25rem;
+  }
+  .action-group {
+    padding-top: 0.25rem;
+    display: flex;
+    column-gap: 0.25rem;
+  }
+  .copy-results {
+    padding: 0.2rem;
+    width: fit-content;
+    border: 1px dotted var(--text-color);
+  }
 }
