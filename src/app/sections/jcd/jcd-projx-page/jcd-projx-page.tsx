@@ -1,7 +1,7 @@
 
 import './jcd-projx-page.css';
 
-import { ChangeEvent, useEffect, useState } from 'react';
+import { ChangeEvent, useEffect, useMemo, useState } from 'react';
 import { useNavigate, useSearch } from '@tanstack/react-router';
 
 import type { JcdProjPreview } from '../../../../lib/models/jcd/jcd-proj-preview';
@@ -10,7 +10,6 @@ import { jcdService } from '../../../../service/jcd-service';
 
 import { JcdProjPreviewItem } from '../jcd-proj-preview/jcd-proj-preview-item';
 import { JcdProjPane } from '../jcd-proj-pane/jcd-proj-pane';
-import { GcpNamespace } from '../../../../lib/models/jcd/gcd-namespace';
 import { EzdSelect } from '../../../components/ezd-select/ezd-select';
 import { JcdEnv } from '../../../../lib/models/jcd/jcd-env';
 
@@ -26,12 +25,22 @@ export function JcdProjxPage(props: JcdProjxPageProps) {
   const [ projPreviews, setProjPreviews ] = useState<JcdProjPreview[]>();
   const [ envs, setEnvs ] = useState<JcdEnv[] | undefined>();
 
-  const [ selectedProjPreview, setSelectedProjPreview ] = useState<JcdProjPreview | undefined>();
   const [ selectedProj, setSelectedProj ] = useState<JcdProject | undefined>();
-  const [ selectedEnv, setSelectedEnv ] = useState<JcdEnv | undefined>();
 
   const navigate = useNavigate({from: '/jcd/proj/'});
   const searchParams = useSearch({from: '/jcd/proj/'});
+
+  const selectedEnv = useMemo(() => {
+    return envs?.find(env => {
+      if(searchParams.env === undefined) {
+        return env.isDefault;
+      }
+      return env.key === searchParams.env;
+    });
+  }, [ envs, searchParams.env ]);
+  const selectedProjPreview = useMemo(() => {
+    return projPreviews?.find(projPrev => projPrev.projectKey === searchParams.proj);
+  }, [ projPreviews, searchParams.proj ]);
 
   const projPreviewItems = projPreviews?.filter(projPrev => {
     return projPrev.projectKey !== selectedProjPreview?.projectKey;
@@ -50,7 +59,7 @@ export function JcdProjxPage(props: JcdProjxPageProps) {
     if(selectedEnv === undefined) {
       return;
     }
-    let envKey = selectedEnv?.isDefault ? undefined : selectedEnv?.key;
+    let envKey = selectedEnv.isDefault ? undefined : selectedEnv.key;
     setProjPreviews(undefined);
     jcdService.getProjectPreviews(envKey).then((_projPreviews) => {
       setProjPreviews(_projPreviews);
@@ -58,29 +67,12 @@ export function JcdProjxPage(props: JcdProjxPageProps) {
   }, [ selectedEnv ]);
 
   useEffect(() => {
-    let foundProjPrev = projPreviews?.find(projPrev => projPrev.projectKey === searchParams.proj);
-    setSelectedProjPreview(foundProjPrev);
-    setSelectedProj(undefined);
-  }, [ searchParams.proj, projPreviews ]);
-  useEffect(() => {
-    if(envs === undefined) {
-      return;
-    }
-    let foundEnv = envs.find(env => {
-      if(searchParams.env === undefined) {
-        return env.isDefault;
-      }
-      return env.key === searchParams.env;
-    });
-    setSelectedEnv(foundEnv);
-  }, [ searchParams.env, envs ]);
-
-  useEffect(() => {
     if(selectedProjPreview === undefined) {
       // cleanup, return
       setSelectedProj(undefined);
       return;
     }
+    setSelectedProj(undefined);
     jcdService.getProjectByRoute(selectedProjPreview.route).then((jcdProj) => {
       setSelectedProj(jcdProj);
     });

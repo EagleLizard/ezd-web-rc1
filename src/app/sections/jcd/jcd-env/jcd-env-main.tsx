@@ -1,6 +1,6 @@
 
 import './jcd-env-main.css';
-import { ChangeEvent, useEffect, useState } from 'react';
+import { ChangeEvent, useEffect, useMemo, useState } from 'react';
 import { useNavigate, useSearch } from '@tanstack/react-router';
 
 import { JcdProjKeyDto } from '../../../../lib/models/jcd/jcd-proj-key-dto';
@@ -30,8 +30,6 @@ export function JcdEnvMain(props: JcdEnvMainProps) {
   let [ projKeys, setProjKeys ] = useState<JcdProjKeyDto[] | undefined>();
   let [ envs, setEnvs ] = useState<JcdEnv[] | undefined>();
 
-  let [ srcEnv, setSrcEnv ] = useState<JcdEnv|undefined>();
-  let [ selectedProjKey, setSelectedProjKey ] = useState<JcdProjKeyDto | undefined>();
   let [ copyRes, setCopyRes ] = useState<JcdEnvCopyResDto | undefined>();
   let [ newEnvName, setNewEnvName ] = useState<string | undefined>();
 
@@ -39,6 +37,18 @@ export function JcdEnvMain(props: JcdEnvMainProps) {
 
   const navigate = useNavigate({ from: '/jcd/env/' });
   const searchParams = useSearch({ from: '/jcd/env/' });
+
+  const srcEnv = useMemo(() => {
+    return envs?.find(env => {
+      if(searchParams.env === undefined) {
+        return env.isDefault;
+      }
+      return env.key === searchParams.env;
+    });
+  }, [ envs, searchParams.env ]);
+  const selectedProjKey = useMemo(() => {
+    return projKeys?.find(projKey => projKey.projectKey === searchParams.proj);
+  }, [ projKeys, searchParams.proj ]);
 
   const srcEnvSelectItems: EzdSelectBasicItem[] = [
     {...none_option},
@@ -79,34 +89,11 @@ export function JcdEnvMain(props: JcdEnvMainProps) {
     fetchEnvs();
   }, []);
   useEffect(() => {
-    if(envs === undefined) {
-      return;
-    }
-    let foundEnv = envs.find(env => {
-      if(searchParams.env === undefined) {
-        return env.isDefault;
-      }
-      return env.key === searchParams.env;
-    });
-    if(foundEnv?.key !== undefined && foundEnv?.key === srcEnv?.key) {
-      return;
-    }
-    setSrcEnv(foundEnv);
-  }, [ searchParams.env, envs ]);
-  useEffect(() => {
-    setSelectedProjKey(undefined);
     setProjKeys(undefined);
     jcdService.getProjKeys(srcEnvKey).then((projKeys) => {
       setProjKeys(projKeys);
     });
   }, [ srcEnv ]);
-  useEffect(() => {
-    if(searchParams.proj === selectedProjKey?.projectKey) {
-      return;
-    }
-    let foundProjKey = projKeys?.find(projKey => projKey.projectKey === searchParams.proj);
-    setSelectedProjKey(foundProjKey);
-  }, [ searchParams.proj, projKeys ]);
 
   return (
     <div className="jcd-env-main">
@@ -211,8 +198,8 @@ export function JcdEnvMain(props: JcdEnvMainProps) {
     jcdService.deleteProjV3(selectedProjKey.projectKey, {
       env: srcEnv?.key,
       deleteImages: true,
-    }).then(res => {
-      console.log(res);
+    }).then(() => {
+      setNavQs({ proj: undefined });
       return fetchEnvs();
     }).catch(err => {
       console.error(err);
