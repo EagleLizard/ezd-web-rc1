@@ -13,4 +13,8 @@ export class ResponseError extends EzdError {
       this.message = `${this.message} - ${message}`;
     }
   }
+
+  static is(e: unknown): e is ResponseError {
+    return e instanceof ResponseError;
+  }
 }

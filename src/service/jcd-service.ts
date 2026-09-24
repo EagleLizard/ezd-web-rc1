@@ -48,13 +48,19 @@ async function getProjectPreviews(env?: string): Promise<JcdProjPreview[]> {
   });
   return jcdProjPreviewsResp;
 }
-async function getProjectPreviewByRoute(route: string): Promise<JcdProjPreview> {
+async function getProjectPreviewByRoute(route: string, env?: string): Promise<JcdProjPreview> {
   let usp = new URLSearchParams({
     preview: 'true',
     route: route,
   });
+  if(env !== undefined) {
+    usp.append('ns', env);
+  }
   let url = `${config.EZD_API_BASE_URL}/v1/jcd/project?${usp.toString()}`;
   let resp = await _fc.get(url);
+  if(resp.status !== 200) {
+    throw new ResponseError(resp);
+  }
   let rawRespBody = await resp.json();
   let projPreview = JcdProjPreview.decode(rawRespBody);
   return projPreview;
@@ -73,10 +79,16 @@ async function getProjects(): Promise<JcdProjPreview[]> {
   return jcdProjectsResp;
 }
 
-async function getProjectByRoute(projectRoute: string): Promise<JcdProject> {
+async function getProjectByRoute(projectRoute: string, env?: string): Promise<JcdProject> {
   let usp = new URLSearchParams({ route: projectRoute });
+  if(env !== undefined) {
+    usp.append('ns', env);
+  }
   let url = `${config.EZD_API_BASE_URL}/v1/jcd/project?${usp.toString()}`;
   let resp = await _fc.get(url);
+  if(resp.status !== 200) {
+    throw new ResponseError(resp);
+  }
   let rawBody = await resp.json();
   let jcdProj = JcdProject.decode(rawBody);
   return jcdProj;

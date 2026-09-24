@@ -60,6 +60,7 @@ export function JcdProjPreviewItem(props: JcdProjPreviewItemProps) {
               params={{
                 project: props.projPreview.route,
               }}
+              search={(prev) => ({env: prev.env})}
             >link</Link>
           </div>
         </div>

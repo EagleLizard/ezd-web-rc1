@@ -1,4 +1,22 @@
 
-.jcd-project-page {
+@import '../../../../shared.css';
 
+.jcd-project-page {
+  .env {
+    padding-bottom: 0.5rem;
+  }
+  .proj-backlink {
+    padding-bottom: 0.5rem;
+  }
+  .fetch-proj-err {
+    width: fit-content;
+    padding: 0.44rem;
+    border: 1px solid var(--error-color);
+    corner-shape: superellipse(2);
+    border-radius: 10px;
+    color: hsl(from var(--error-color) h s calc(l * 1.6));
+    .error-heading {
+      padding-bottom: 0.25rem;
+    }
+  }
 }
