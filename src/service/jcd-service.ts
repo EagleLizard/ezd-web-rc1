@@ -32,11 +32,9 @@ export const jcdService = {
   deleteProjV3,
 } as const;
 
-async function getProjectPreviews(env?: string): Promise<JcdProjPreview[]> {
-  let usp = new URLSearchParams({ preview: 'true' });
-  if(env !== undefined) {
-    usp.append('ns', env);
-  }
+async function getProjectPreviews(env: string): Promise<JcdProjPreview[]> {
+  // let _env = env === undefined ? default_env_id : env;
+  let usp = new URLSearchParams({ preview: 'true', env: env });
   let url = `${config.EZD_API_BASE_URL}/v1/jcd/project?${usp.toString()}`;
   let resp = await _fc.get(url);
   let rawRespBody = await resp.json();
@@ -48,14 +46,12 @@ async function getProjectPreviews(env?: string): Promise<JcdProjPreview[]> {
   });
   return jcdProjPreviewsResp;
 }
-async function getProjectPreviewByRoute(route: string, env?: string): Promise<JcdProjPreview> {
+async function getProjectPreviewByRoute(route: string, env: string): Promise<JcdProjPreview> {
   let usp = new URLSearchParams({
     preview: 'true',
     route: route,
+    env: env,
   });
-  if(env !== undefined) {
-    usp.append('ns', env);
-  }
   let url = `${config.EZD_API_BASE_URL}/v1/jcd/project?${usp.toString()}`;
   let resp = await _fc.get(url);
   if(resp.status !== 200) {
@@ -79,11 +75,8 @@ async function getProjects(): Promise<JcdProjPreview[]> {
   return jcdProjectsResp;
 }
 
-async function getProjectByRoute(projectRoute: string, env?: string): Promise<JcdProject> {
-  let usp = new URLSearchParams({ route: projectRoute });
-  if(env !== undefined) {
-    usp.append('ns', env);
-  }
+async function getProjectByRoute(projectRoute: string, env: string): Promise<JcdProject> {
+  let usp = new URLSearchParams({ route: projectRoute, env: env });
   let url = `${config.EZD_API_BASE_URL}/v1/jcd/project?${usp.toString()}`;
   let resp = await _fc.get(url);
   if(resp.status !== 200) {
@@ -105,12 +98,9 @@ async function getNamespaces(): Promise<GcpNamespace[]> {
   return nss;
 }
 
-async function getKinds(ns?: string): Promise<GcpKeyDto[]> {
-  let url = `${config.EZD_API_BASE_URL}/v1/jcd/env/kind`;
-  if(ns !== undefined) {
-    let usp = new URLSearchParams({ ns: ns });
-    url = `${url}?${usp.toString()}`;
-  }
+async function getKinds(env: string): Promise<GcpKeyDto[]> {
+  let usp = new URLSearchParams({ env: env });
+  let url = `${config.EZD_API_BASE_URL}/v1/jcd/env/kind?${usp.toString()}`;
   let resp = await _fc.get(url);
   let rawBody = await resp.json();
   if(!Array.isArray(rawBody)) {
@@ -120,12 +110,9 @@ async function getKinds(ns?: string): Promise<GcpKeyDto[]> {
   return jcdKinds;
 }
 
-async function getKindEntityKeys(kind: string, ns?: string): Promise<GcpKeyDto[]> {
-  let url = `${config.EZD_API_BASE_URL}/v1/jcd/env/kind/${kind}`;
-  if(ns !== undefined) {
-    let usp = new URLSearchParams({ ns: ns });
-    url = `${url}?${usp.toString()}`;
-  }
+async function getKindEntityKeys(kind: string, env: string): Promise<GcpKeyDto[]> {
+  let usp = new URLSearchParams({ env: env });
+  let url = `${config.EZD_API_BASE_URL}/v1/jcd/env/kind/${kind}?${usp.toString()}`;
   let resp = await _fc.get(url);
   let rawBody = await resp.json();
   if(!Array.isArray(rawBody)) {
@@ -135,11 +122,8 @@ async function getKindEntityKeys(kind: string, ns?: string): Promise<GcpKeyDto[]
   return entityKeys;
 }
 
-async function getKindEntityByName(kind: string, name: string, ns?: string): Promise<unknown> {
-  let usp = new URLSearchParams({ name: name });
-  if(ns !== undefined) {
-    usp.append('ns', ns);
-  }
+async function getKindEntityByName(kind: string, name: string, env: string): Promise<unknown> {
+  let usp = new URLSearchParams({ name: name, env: env });
   let url = `${config.EZD_API_BASE_URL}/v1/jcd/env/kind/${kind}?${usp.toString()}`;
   let resp = await _fc.get(url);
   let rawBody = await resp.json() as unknown;
@@ -147,13 +131,14 @@ async function getKindEntityByName(kind: string, name: string, ns?: string): Pro
 }
 
 async function postCopyEnvEntity(opts: {
-  fromEnv?: string;
+  fromEnv: string;
   toEnv: string;
   kind: string;
   name: string;
 }) {
   let url = `${config.EZD_API_BASE_URL}/v1/jcd/env/kind/${opts.kind}/copy`;
   let body = {
+    fromEnv: opts.fromEnv,
     toEnv: opts.toEnv,
     kind: opts.kind,
     name: opts.name,
@@ -166,12 +151,9 @@ async function postCopyEnvEntity(opts: {
   return rawBody;
 }
 
-async function getProjKeys(env?: string): Promise<JcdProjKeyDto[]> {
-  let url = `${config.EZD_API_BASE_URL}/v1/jcd/env/proj`;
-  if(env !== undefined) {
-    let usp = new URLSearchParams({ env: env });
-    url = `${url}?${usp.toString()}`;
-  }
+async function getProjKeys(env: string): Promise<JcdProjKeyDto[]> {
+  let usp = new URLSearchParams({ env: env });
+  let url = `${config.EZD_API_BASE_URL}/v1/jcd/env/proj?${usp.toString()}`;
   let resp = await _fc.get(url);
   if(resp.status !== 200) {
     throw new ResponseError(resp);
@@ -185,7 +167,7 @@ async function getProjKeys(env?: string): Promise<JcdProjKeyDto[]> {
 
 type JcdPostCopyProjOpts = {
   projKey: string;
-  fromEnv?: string;
+  fromEnv: string;
   toEnv: string;
 } & {};
 async function postCopyProj(opts: JcdPostCopyProjOpts): Promise<JcdEnvCopyResDto> {

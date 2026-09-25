@@ -24,6 +24,9 @@ export function JcdProjectPage(props: JcdProjectPageProps) {
   const searchParams = useSearch({ from: '/jcd/proj/$project' });
 
   useEffect(() => {
+    if(searchParams.env === undefined) {
+      return undefined;
+    }
     let projPromise = jcdService.getProjectByRoute(props.projectRoute, searchParams.env).then((_jcdProj) => {
       setJcdProj(_jcdProj);
     });
@@ -42,7 +45,7 @@ export function JcdProjectPage(props: JcdProjectPageProps) {
       }
       setFetchProjErr(errMsg);
     });
-  }, [ props.projectRoute ]);
+  }, [ props.projectRoute, searchParams.env ]);
 
   return (
     <div className="jcd-project-page">

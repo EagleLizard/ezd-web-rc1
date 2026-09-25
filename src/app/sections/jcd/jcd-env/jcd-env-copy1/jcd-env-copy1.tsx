@@ -46,7 +46,8 @@ export function JcdEnvCopy1(props: JcdEnvCopy1Props){
     || (selectedEnv?.key === selectedTargetEnv?.key)
   );
   const copyEnabled = (
-    selectedTargetEnv !== undefined
+    selectedEnv !== undefined
+    && selectedTargetEnv !== undefined
     && selectedEnvKind !== undefined
     && selectedEntity !== undefined
     && !srcEnvMatchesTargetEnv
@@ -96,7 +97,7 @@ export function JcdEnvCopy1(props: JcdEnvCopy1Props){
     if(selectedEnv === undefined) {
       return;
     }
-    jcdService.getKinds(sourceEnvKey).then((jcdKinds) => {
+    jcdService.getKinds(selectedEnv.key).then((jcdKinds) => {
       setEnvKinds(jcdKinds);
     });
   }, [ selectedEnv ]);
@@ -104,10 +105,10 @@ export function JcdEnvCopy1(props: JcdEnvCopy1Props){
     setKindEntityKeys(undefined);
     setSelectedEntity(undefined);
     setEntityPreview(undefined);
-    if(selectedEnvKind === undefined) {
+    if(selectedEnvKind === undefined || selectedEnv === undefined) {
       return;
     }
-    jcdService.getKindEntityKeys(selectedEnvKind.name, sourceEnvKey).then(entityKeys => {
+    jcdService.getKindEntityKeys(selectedEnvKind.name, selectedEnv.key).then(entityKeys => {
       setKindEntityKeys(entityKeys);
     });
   }, [ selectedEnvKind ]);
@@ -272,7 +273,7 @@ export function JcdEnvCopy1(props: JcdEnvCopy1Props){
       return;
     }
     let copyOpts: Parameters<typeof jcdService.postCopyEnvEntity>[0] = {
-      fromEnv: sourceEnvKey,
+      fromEnv: selectedEnv.key,
       toEnv: selectedTargetEnv.key,
       kind: selectedEnvKind.name,
       name: selectedEntity.name,
@@ -311,10 +312,10 @@ export function JcdEnvCopy1(props: JcdEnvCopy1Props){
   }
 
   function handlePreviewClick($e: MouseEvent<HTMLButtonElement>) {
-    if(selectedEnvKind === undefined || selectedEntity === undefined) {
+    if(selectedEnvKind === undefined || selectedEntity === undefined || selectedEnv === undefined) {
       return;
     }
-    jcdService.getKindEntityByName(selectedEnvKind.name, selectedEntity.name).then((res) => {
+    jcdService.getKindEntityByName(selectedEnvKind.name, selectedEntity.name, selectedEnv.key).then((res) => {
       setEntityPreview(res);
     });
   }

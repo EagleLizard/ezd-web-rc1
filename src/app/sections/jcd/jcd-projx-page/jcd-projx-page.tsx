@@ -59,9 +59,8 @@ export function JcdProjxPage(props: JcdProjxPageProps) {
     if(selectedEnv === undefined) {
       return;
     }
-    let envKey = selectedEnv.isDefault ? undefined : selectedEnv.key;
     setProjPreviews(undefined);
-    jcdService.getProjectPreviews(envKey).then((_projPreviews) => {
+    jcdService.getProjectPreviews(selectedEnv.key).then((_projPreviews) => {
       setProjPreviews(_projPreviews);
     });
   }, [ selectedEnv ]);
@@ -72,8 +71,11 @@ export function JcdProjxPage(props: JcdProjxPageProps) {
       setSelectedProj(undefined);
       return;
     }
+    if(selectedEnv === undefined) {
+      return;
+    }
     setSelectedProj(undefined);
-    jcdService.getProjectByRoute(selectedProjPreview.route).then((jcdProj) => {
+    jcdService.getProjectByRoute(selectedProjPreview.route, selectedEnv.key).then((jcdProj) => {
       setSelectedProj(jcdProj);
     });
   }, [ selectedProjPreview ]);

@@ -62,10 +62,6 @@ export function JcdEnvMain(props: JcdEnvMainProps) {
     {...none_option},
     ...(destEnvs.map(env => ({ value: env.key, label: env.name,})) ?? []),
   ];
-  let srcEnvKey = (srcEnv?.isDefault)
-    ? undefined
-    : srcEnv?.key
-  ;
   const destEnv = destEnvs.find(env => env.key === searchParams.toenv);
 
   const copyEnabled = (
@@ -89,8 +85,11 @@ export function JcdEnvMain(props: JcdEnvMainProps) {
     fetchEnvs();
   }, []);
   useEffect(() => {
+    if(srcEnv === undefined) {
+      return;
+    }
     setProjKeys(undefined);
-    jcdService.getProjKeys(srcEnvKey).then((projKeys) => {
+    jcdService.getProjKeys(srcEnv.key).then((projKeys) => {
       setProjKeys(projKeys);
     });
   }, [ srcEnv ]);
@@ -216,7 +215,7 @@ export function JcdEnvMain(props: JcdEnvMainProps) {
     if(!copyEnabled) {
       return;
     }
-    let fromEnv = srcEnv.isDefault ? undefined : srcEnv.key;
+    let fromEnv = srcEnv.key;
     let toEnv: string;
     if(destEnv.key === new_env_option.value) {
       if(newEnvName === undefined || newEnvName.length < 1) {
