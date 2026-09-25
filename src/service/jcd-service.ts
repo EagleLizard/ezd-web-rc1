@@ -33,7 +33,6 @@ export const jcdService = {
 } as const;
 
 async function getProjectPreviews(env: string): Promise<JcdProjPreview[]> {
-  // let _env = env === undefined ? default_env_id : env;
   let usp = new URLSearchParams({ preview: 'true', env: env });
   let url = `${config.EZD_API_BASE_URL}/v1/jcd/project?${usp.toString()}`;
   let resp = await _fc.get(url);
@@ -88,7 +87,7 @@ async function getProjectByRoute(projectRoute: string, env: string): Promise<Jcd
 }
 
 async function getNamespaces(): Promise<GcpNamespace[]> {
-  let url = `${config.EZD_API_BASE_URL}/v1/jcd/ns`;
+  let url = `${config.EZD_API_BASE_URL}/v1/jcd/env`;
   let resp = await _fc.get(url);
   let rawBody = await resp.json();
   if(!Array.isArray(rawBody)) {
@@ -99,8 +98,7 @@ async function getNamespaces(): Promise<GcpNamespace[]> {
 }
 
 async function getKinds(env: string): Promise<GcpKeyDto[]> {
-  let usp = new URLSearchParams({ env: env });
-  let url = `${config.EZD_API_BASE_URL}/v1/jcd/env/kind?${usp.toString()}`;
+  let url = `${config.EZD_API_BASE_URL}/v1/jcd/env/${env}/kind`;
   let resp = await _fc.get(url);
   let rawBody = await resp.json();
   if(!Array.isArray(rawBody)) {
@@ -111,8 +109,7 @@ async function getKinds(env: string): Promise<GcpKeyDto[]> {
 }
 
 async function getKindEntityKeys(kind: string, env: string): Promise<GcpKeyDto[]> {
-  let usp = new URLSearchParams({ env: env });
-  let url = `${config.EZD_API_BASE_URL}/v1/jcd/env/kind/${kind}?${usp.toString()}`;
+  let url = `${config.EZD_API_BASE_URL}/v1/jcd/env/${env}/kind/${kind}`;
   let resp = await _fc.get(url);
   let rawBody = await resp.json();
   if(!Array.isArray(rawBody)) {
@@ -123,8 +120,8 @@ async function getKindEntityKeys(kind: string, env: string): Promise<GcpKeyDto[]
 }
 
 async function getKindEntityByName(kind: string, name: string, env: string): Promise<unknown> {
-  let usp = new URLSearchParams({ name: name, env: env });
-  let url = `${config.EZD_API_BASE_URL}/v1/jcd/env/kind/${kind}?${usp.toString()}`;
+  let usp = new URLSearchParams({ name: name });
+  let url = `${config.EZD_API_BASE_URL}/v1/jcd/env/${env}/kind/${kind}?${usp.toString()}`;
   let resp = await _fc.get(url);
   let rawBody = await resp.json() as unknown;
   return rawBody;
@@ -136,11 +133,8 @@ async function postCopyEnvEntity(opts: {
   kind: string;
   name: string;
 }) {
-  let url = `${config.EZD_API_BASE_URL}/v1/jcd/env/kind/${opts.kind}/copy`;
+  let url = `${config.EZD_API_BASE_URL}/v1/jcd/env/${opts.fromEnv}/kind/${opts.kind}/copy/${opts.toEnv}`;
   let body = {
-    fromEnv: opts.fromEnv,
-    toEnv: opts.toEnv,
-    kind: opts.kind,
     name: opts.name,
   };
   let resp = await _fc.post(url, { body: body });
@@ -152,8 +146,7 @@ async function postCopyEnvEntity(opts: {
 }
 
 async function getProjKeys(env: string): Promise<JcdProjKeyDto[]> {
-  let usp = new URLSearchParams({ env: env });
-  let url = `${config.EZD_API_BASE_URL}/v1/jcd/env/proj?${usp.toString()}`;
+  let url = `${config.EZD_API_BASE_URL}/v1/jcd/env/${env}/proj`;
   let resp = await _fc.get(url);
   if(resp.status !== 200) {
     throw new ResponseError(resp);
@@ -171,7 +164,7 @@ type JcdPostCopyProjOpts = {
   toEnv: string;
 } & {};
 async function postCopyProj(opts: JcdPostCopyProjOpts): Promise<JcdEnvCopyResDto> {
-  let url = `${config.EZD_API_BASE_URL}/v1/jcd/env/proj/${opts.projKey}/copy`;
+  let url = `${config.EZD_API_BASE_URL}/v1/jcd/env/${opts.fromEnv}/proj/${opts.projKey}/copy/${opts.toEnv}`;
   let body = {
     fromEnv: opts.fromEnv,
     toEnv: opts.toEnv,
@@ -186,15 +179,12 @@ async function postCopyProj(opts: JcdPostCopyProjOpts): Promise<JcdEnvCopyResDto
 }
 
 type DeleteJcdProjV3Opts = {
-  env?: string;
+  env: string;
   deleteImages?: boolean;
 } & {};
-async function deleteProjV3(projKey: string, opts: DeleteJcdProjV3Opts = {}) {
+async function deleteProjV3(projKey: string, opts: DeleteJcdProjV3Opts) {
   let usp = new URLSearchParams();
-  let url = `${config.EZD_API_BASE_URL}/v1/jcd/env/proj/${projKey}`;
-  if(opts.env !== undefined) {
-    usp.set('env', opts.env);
-  }
+  let url = `${config.EZD_API_BASE_URL}/v1/jcd/env/${opts.env}/proj/${projKey}`;
   if(opts.deleteImages === true) {
     usp.set('img', 'true');
   }

@@ -191,11 +191,11 @@ export function JcdEnvMain(props: JcdEnvMainProps) {
     setShowOpModal(false);
   }
   function handleDeleteClick() {
-    if(selectedProjKey === undefined) {
+    if(selectedProjKey === undefined || srcEnv === undefined) {
       return;
     }
     jcdService.deleteProjV3(selectedProjKey.projectKey, {
-      env: srcEnv?.key,
+      env: srcEnv.key,
       deleteImages: true,
     }).then(() => {
       setNavQs({ proj: undefined });
