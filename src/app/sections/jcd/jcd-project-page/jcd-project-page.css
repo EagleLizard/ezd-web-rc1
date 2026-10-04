@@ -19,4 +19,15 @@
       padding-bottom: 0.25rem;
     }
   }
+  .title-image-section {
+    .title-image-upload {
+      .file-select {
+        display: flex;
+        column-gap: 0.35rem;
+        input.upload-input {
+          display: none;
+        }
+      }
+    }
+  }
 }

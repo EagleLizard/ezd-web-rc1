@@ -95,7 +95,11 @@ function getBodyOpt(opts: FetchClientReqOpts): RequestInit['body'] {
   if(opts.body !== undefined && opts.bodyInit !== undefined) {
     throw new EzdError('Cannot include both \'body\' and \'bodyInit\'', 'EZDW_0.2');
   } else if(opts.body !== undefined) {
-    body = JSON.stringify(opts.body);
+    if(opts.body instanceof FormData) {
+      body = opts.body;
+    } else {
+      body = JSON.stringify(opts.body);
+    }
   } else if(opts.bodyInit !== undefined) {
     body = opts.bodyInit;
   }

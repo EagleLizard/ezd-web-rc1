@@ -30,6 +30,7 @@ export const jcdService = {
   getProjKeys,
   postCopyProj,
   deleteProjV3,
+  postUploadProjImg,
 } as const;
 
 async function getProjectPreviews(env: string): Promise<JcdProjPreview[]> {
@@ -192,6 +193,22 @@ async function deleteProjV3(projKey: string, opts: DeleteJcdProjV3Opts) {
     url = `${url}?${usp.toString()}`;
   }
   let resp = await _fc.delete(url);
+  if(resp.status !== 200) {
+    throw new ResponseError(resp);
+  }
+}
+
+type PostUPloadProjImgOpts = {
+  env: string;
+  fileData: FormData;
+  imageType: 'TITLE' | 'GALLERY';
+} & {};
+async function postUploadProjImg(projKey: string, opts: PostUPloadProjImgOpts) {
+  let usp = new URLSearchParams({ env: opts.env, type: opts.imageType });
+  let url = `${config.EZD_API_BASE_URL}/v1/jcd/project/${projKey}/img?${usp.toString()}`;
+  let resp = await _fc.wCt(undefined).post(url, {
+    body: opts.fileData,
+  });
   if(resp.status !== 200) {
     throw new ResponseError(resp);
   }

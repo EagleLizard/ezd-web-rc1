@@ -1,6 +1,6 @@
 
 import './jcd-project-page.css';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Link, useSearch } from '@tanstack/react-router';
 
 import { JcdProject } from '../../../../lib/models/jcd/jcd-project';
@@ -9,6 +9,8 @@ import { config } from '../../../../lib/config';
 import { JcdProjPreview } from '../../../../lib/models/jcd/jcd-proj-preview';
 import { jcdUtil } from '../../../../service/jcd-util';
 import { ResponseError } from '../../../../lib/models/error/response-error';
+import { EzdButton } from '../../../components/ezd-button/ezd-button';
+import { EzdIconButton } from '../../../components/ezd-icon-button/ezd-icon-button';
 
 type JcdProjectPageProps = {
   projectRoute: string;
@@ -16,8 +18,11 @@ type JcdProjectPageProps = {
 export function JcdProjectPage(props: JcdProjectPageProps) {
   const [ jcdProj, setJcdProj ] = useState<JcdProject | undefined>();
   const [ jcdProjPreview, setJcdProjPreview ] = useState<JcdProjPreview | undefined>();
+  const [ titleImgToUpload, setTitleImgToUpload ] = useState<File | undefined>(undefined);
 
   const [ fetchProjErr, setFetchProjErr ] = useState<string | undefined>();
+
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const titleImgUrl = `${config.EZD_API_BASE_URL}/v1/jcd/img/${jcdProjPreview?.titleUri}?width=100`;
 
@@ -64,8 +69,54 @@ export function JcdProjectPage(props: JcdProjectPageProps) {
       )}
       {jcdProj && jcdProjPreview && (
         <>
-          <div>
-            <img src={titleImgUrl}/>
+          <div className="title-image-section">
+            <img className="title-image" src={titleImgUrl}/>
+            <div className="title-image-upload">
+              <div className="file-select">
+                <EzdButton
+                  className="upload-btn"
+                  onClick={() => {
+                    fileInputRef.current?.click();
+                  }}
+                >
+                  Select Image
+                </EzdButton>
+                <input
+                  className="upload-input"
+                  type="file"
+                  ref={fileInputRef}
+                  onChange={($e) => {
+                    setTitleImgToUpload($e.target.files?.item(0) ?? undefined);
+                  }}
+                />
+                <div className="selected-image">
+                  {titleImgToUpload?.name}
+                </div>
+                {titleImgToUpload && (
+                  <EzdIconButton onClick={() => {
+                    setTitleImgToUpload(undefined);
+                  }}>X</EzdIconButton>
+                )}
+              </div>
+              {titleImgToUpload && (
+                <div className="file-upload">
+                  <EzdButton className="file-upload-btn" onClick={($e) => {
+                    if(searchParams.env === undefined) {
+                      return;
+                    }
+                    let formData = new FormData();
+                    formData.append('myFile', titleImgToUpload);
+                    jcdService.postUploadProjImg(jcdProj.projectKey, {
+                      env: searchParams.env,
+                      fileData: formData,
+                      imageType: 'TITLE',
+                    }).then(() => {
+                      console.log(formData);
+                    });
+                  }}>upload</EzdButton>
+                </div>
+              )}
+            </div>
           </div>
           <h1>
             {jcdProjPreview.title}
