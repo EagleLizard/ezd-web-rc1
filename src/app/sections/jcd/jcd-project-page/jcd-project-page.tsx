@@ -24,7 +24,7 @@ export function JcdProjectPage(props: JcdProjectPageProps) {
 
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const titleImgUrl = `${config.EZD_API_BASE_URL}/v1/jcd/img/${jcdProjPreview?.titleUri}?width=100`;
+  const titleImgUrl = `${config.EZD_API_BASE_URL}/v1/jcd/img-proxy/${jcdProjPreview?.titleUri}?width=100`;
 
   const searchParams = useSearch({ from: '/jcd/proj/$project' });
 

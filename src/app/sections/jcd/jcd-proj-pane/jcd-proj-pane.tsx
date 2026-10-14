@@ -14,7 +14,7 @@ type JcdProjPaneProps = {
   onClose?: () => void;
 } & {};
 export function JcdProjPane(props: JcdProjPaneProps) {
-  const titleImgUrl = `${config.EZD_API_BASE_URL}/v1/jcd/img/${
+  const titleImgUrl = `${config.EZD_API_BASE_URL}/v1/jcd/img-proxy/${
     props.jcdProjPreview.titleUri
   }?width=600`;
 

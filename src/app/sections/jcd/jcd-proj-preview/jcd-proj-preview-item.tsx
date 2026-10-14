@@ -14,7 +14,7 @@ type JcdProjPreviewItemProps = {
 } & {};
 
 export function JcdProjPreviewItem(props: JcdProjPreviewItemProps) {
-  const titleImgUrl = `${config.EZD_API_BASE_URL}/v1/jcd/img/${props.projPreview.titleUri}?width=100`;
+  const titleImgUrl = `${config.EZD_API_BASE_URL}/v1/jcd/img-proxy/${props.projPreview.titleUri}?width=100`;
 
   let classNames = [
     'jcd-proj-preview-item',
