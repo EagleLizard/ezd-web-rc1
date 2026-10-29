@@ -7,6 +7,7 @@ export const ezdErrorCodes = {
   INVALID_EMAIL: 'EZDW_1.1',
   INVALID_USERNAME: 'EZDW_1.2',
   INVALID_PASSWORD: 'EZDW_1.3',
+  schema_parse: 'EZDW_1.4',
 
   response_error: 'EZDW_2.0',
   invalid_response_type: 'EZDW_2.1',

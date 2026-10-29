@@ -1,13 +1,44 @@
 
 /* typebox utils */
 
-import type { StaticDecode, StaticType, TSchema } from 'typebox';
-import { DecodeError, Value } from 'typebox/value';
+import type { StaticDecode, StaticParse, StaticType, TSchema } from 'typebox';
+import { DecodeError, ParseError, Value } from 'typebox/value';
 import { EzdError } from '../models/error/ezd-error';
 
 export const tbUtil = {
   decodeWithSchema: decodeWithSchema,
+  parseWithSchema: parseWithSchema,
+  parseFn: parseFn,
 } as const;
+
+function parseFn<
+  S extends TSchema,
+  /* eslint-disable-next-line @typescript-eslint/no-empty-object-type */
+  T extends StaticType<[], 'Encode', {}, {}, S> = StaticParse<S>
+>(schema: S): (val: unknown) => T {
+  return (val: unknown): T => {
+    return tbUtil.parseWithSchema<S, T>(schema, val);
+  };
+}
+
+function parseWithSchema<
+  S extends TSchema,
+  /* eslint-disable-next-line @typescript-eslint/no-empty-object-type */
+  T extends StaticType<[], 'Encode', {}, {}, S> = StaticParse<S>
+>(tschema: S, rawVal: unknown): T {
+  let parsed: T;
+  try {
+    parsed = Value.Parse<S>(tschema, rawVal);
+    let etc = Value.Parse<S>(tschema, rawVal);
+    return parsed;
+  } catch(e) {
+    if(!(e instanceof ParseError)) {
+      throw e;
+    }
+    let errMsg = `${e.cause.errors[0].message}, path: ${e.cause.errors[0].schemaPath}`;
+    throw new EzdError(errMsg, 'EZDW_1.4', { cause: e });
+  }
+}
 
 function decodeWithSchema<
   S extends TSchema,

@@ -11,4 +11,7 @@
     color: red;
     border-color: red;
   }
+  &.disabled {
+    font-style: italic;
+  }
 }

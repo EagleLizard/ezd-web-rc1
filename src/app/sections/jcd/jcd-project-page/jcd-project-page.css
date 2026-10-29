@@ -28,6 +28,26 @@
           display: none;
         }
       }
+      .file-upload {
+        display: flex;
+      }
+    }
+  }
+  .proj-imgs {
+    display: flex;
+    flex-wrap: wrap;
+    .proj-img-tile {
+      padding: 0.33rem;
+      border: 1px solid var(--text-color);
+      .img-container {
+        --img-size: 135px;
+        img {
+          min-height: var(--img-size);
+          height: var(--img-size);
+          /* width: var(--img-size); */
+          /* min-width: var(--img-size); */
+        }
+      }
     }
   }
 }

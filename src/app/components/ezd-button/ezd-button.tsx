@@ -29,10 +29,14 @@ export function EzdButton(props: EzdButtonProps) {
       classNames.push('color-delete');
       break;
   }
+  if(props.disabled) {
+    classNames.push('disabled');
+  }
   const classNameStr = classNames.join(' ');
   return (
     <button
       className={classNameStr}
+      aria-disabled={props.disabled}
       type={props.type ?? 'button'}
       onClick={props?.onClick}
       tabIndex={tabIndex}

@@ -6,6 +6,7 @@ import { ResponseError } from '../lib/models/error/response-error';
 import { GcpNamespace } from '../lib/models/jcd/gcd-namespace';
 import { GcpKeyDto } from '../lib/models/jcd/gcp-key-dto';
 import { JcdEnvCopyResDto } from '../lib/models/jcd/jcd-env-copy-res-dto';
+import { JcdImage } from '../lib/models/jcd/jcd-image';
 import { JcdProjKeyDto } from '../lib/models/jcd/jcd-proj-key-dto';
 import { JcdProjPreview } from '../lib/models/jcd/jcd-proj-preview';
 import { JcdProject } from '../lib/models/jcd/jcd-project';
@@ -31,6 +32,8 @@ export const jcdService = {
   postCopyProj,
   deleteProjV3,
   postUploadProjImg,
+  getProjImgs: getProjImgs,
+  deleteProjImg: deleteProjImg,
 } as const;
 
 async function getProjectPreviews(env: string): Promise<JcdProjPreview[]> {
@@ -146,6 +149,27 @@ async function postCopyEnvEntity(opts: {
   return rawBody;
 }
 
+async function getProjImgs(env: string, projKey: string): Promise<JcdImage[]> {
+  let usp = new URLSearchParams({ env: env });
+  let url = `${config.EZD_API_BASE_URL}/v1/jcd/project/${projKey}/img?${usp.toString()}`;
+  let resp = await _fc.get(url);
+  let rawBody = await resp.json();
+  if(!Array.isArray(rawBody)) {
+    throw new EzdError('Invalid response type, expected array', 'EZDW_2.1');
+  }
+  let jcdImgs = rawBody.map(JcdImage.parse);
+  return jcdImgs;
+}
+
+async function deleteProjImg(env: string, projKey: string, imgKey: string): Promise<void> {
+  let usp = new URLSearchParams({ env: env, imgKey: imgKey });
+  let url = `${config.EZD_API_BASE_URL}/v1/jcd/project/${projKey}/img?${usp.toString()}`;
+  let resp = await _fc.delete(url);
+  if(resp.status !== 200) {
+    throw new ResponseError(resp);
+  }
+}
+
 async function getProjKeys(env: string): Promise<JcdProjKeyDto[]> {
   let url = `${config.EZD_API_BASE_URL}/v1/jcd/env/${env}/proj`;
   let resp = await _fc.get(url);
@@ -198,12 +222,12 @@ async function deleteProjV3(projKey: string, opts: DeleteJcdProjV3Opts) {
   }
 }
 
-type PostUPloadProjImgOpts = {
+type PostUploadProjImgOpts = {
   env: string;
   fileData: FormData;
   imageType: 'TITLE' | 'GALLERY';
 } & {};
-async function postUploadProjImg(projKey: string, opts: PostUPloadProjImgOpts) {
+async function postUploadProjImg(projKey: string, opts: PostUploadProjImgOpts) {
   let usp = new URLSearchParams({ env: opts.env, type: opts.imageType });
   let url = `${config.EZD_API_BASE_URL}/v1/jcd/project/${projKey}/img?${usp.toString()}`;
   let resp = await _fc.wCt(undefined).post(url, {
